@@ -54,3 +54,29 @@ int RTTP::getMaxConsecutiveGames()
 {
   return this->maxConsecutiveGames;
 }
+
+bool RTTP::noConsecutiveHomeGames()
+{ 
+  for (size_t i = 0; i < this->numberOfTeams; i++) // for each team
+  {
+    for (size_t d = 0; d < (this->numberOfDays - 1); d++) // for each day - 1
+    {
+      int sumOfG = 0;
+      
+      for (size_t k = 0; k <= 1; k++)
+      {
+        if (this->G[i][d + k] == 0)
+        {
+          sumOfG++;
+        }
+      }
+      
+      if (sumOfG > 1)
+      {
+        return false;
+      }
+    }
+  }
+  
+  return true; // All sums of G turned out to be less or equal to 1
+}

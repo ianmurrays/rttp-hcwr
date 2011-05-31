@@ -15,6 +15,8 @@ SUITE(RTTP)
     CHECK_EQUAL(numberOfDays, rttp->getNumberOfDays());
     CHECK_EQUAL(maxConsecutiveGames, rttp->getMaxConsecutiveGames());
     CHECK_EQUAL(maxConsecutiveOffDays, rttp->getMaxConsecutiveOffDays());
+    
+    delete rttp;
   }
   
   TEST(ConstructorShouldInitializeAllVariables)
@@ -35,5 +37,32 @@ SUITE(RTTP)
 
     CHECK_EQUAL(numberOfTeams, rttp->C.size());
     CHECK_EQUAL(numberOfDays, rttp->C[0].size()); // Check the first one only.
+    
+    delete rttp;
+  }
+  
+  TEST(NoConsecutiveHomeGames)
+  {
+    RTTP * rttp = new RTTP(2, 4, 1, 1);
+    
+    CHECK( ! rttp->noConsecutiveHomeGames()); // This should be invalid at the beginning.
+
+    // Make them all valid
+    for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
+    {
+      for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+      {
+        rttp->G[i][d] = 1;
+      }
+    }
+    
+    CHECK(rttp->noConsecutiveHomeGames());
+    
+    // Now set one combination to be invalid
+    rttp->G[1][1] = 0;
+    rttp->G[1][2] = 0;
+    CHECK( ! rttp->noConsecutiveHomeGames());
+    
+    delete rttp;
   }
 }
