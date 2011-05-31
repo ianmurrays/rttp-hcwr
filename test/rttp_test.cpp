@@ -65,4 +65,28 @@ SUITE(RTTP)
     
     delete rttp;
   }
+  
+  TEST(LengthOfHomeGames)
+  {
+    RTTP * rttp = new RTTP(2, 4, 1, 1);
+    CHECK( ! rttp->lengthOfHomeGames()); // This should be false at the beginning.
+    
+    // Make them all valid
+    // Make them all valid
+    for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
+    {
+      for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+      {
+        rttp->G[i][d] = 2;
+      }
+    }
+    
+    CHECK(rttp->lengthOfHomeGames()); // This should be true now
+    
+    // Make an invalid combination
+    rttp->G[0][1] = rttp->G[0][2] = 1;
+    CHECK( ! rttp->lengthOfHomeGames());
+    
+    delete rttp;
+  }
 }

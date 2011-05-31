@@ -65,7 +65,7 @@ bool RTTP::noConsecutiveHomeGames()
       
       for (size_t k = 0; k <= 1; k++)
       {
-        if (this->G[i][d + k] == 0)
+        if (this->G[i][d + k] == G_HOMEGAME)
         {
           sumOfG++;
         }
@@ -79,4 +79,30 @@ bool RTTP::noConsecutiveHomeGames()
   }
   
   return true; // All sums of G turned out to be less or equal to 1
+}
+
+bool RTTP::lengthOfHomeGames()
+{
+  for (size_t i = 0; i < this->numberOfTeams; i++) // for each team
+  {
+    for (size_t d = 0; d < (this->numberOfDays - this->maxConsecutiveGames); d++) // for each day - max_cons_games
+    {
+      int sumOfG = 0;
+      
+      for (size_t k = 0; k <= this->maxConsecutiveGames; k++)
+      {
+        if (this->G[i][d + k] != G_OFFDAY) // ie. if team is playing, wherever ...
+        {
+          sumOfG++;
+        }
+      }
+      
+      if (sumOfG > this->maxConsecutiveGames)
+      {
+        return false;
+      }
+    }
+  }
+  
+  return true;
 }

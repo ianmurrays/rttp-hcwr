@@ -4,6 +4,11 @@ using namespace std;
 
 #ifndef _RTTP_HEADER
 #define _RTTP_HEADER
+
+#define G_HOMEGAME 0
+#define G_ROADGAME 1
+#define G_OFFDAY   2
+
 class RTTP
 {
   #ifndef _RTTP_TEST // This allows us to test private methods and variables easily, maybe I shouldn't do this :(
