@@ -2,9 +2,15 @@
 
 using namespace std;
 
+#ifndef _RTTP_HEADER
+#define _RTTP_HEADER
 class RTTP
 {
+  #ifndef _RTTP_TEST // This allows us to test private methods and variables easily, maybe I shouldn't do this :(
+  public:
+  #else
   private:
+  #endif
     /**
      * Defines the maximum days a team can have bias.
      */
@@ -33,28 +39,28 @@ class RTTP
      *  2: if team i has an off day on day d
      *
      */
-    vector<int> G;
+    vector< vector<int> > G;
     
     /**
      * i x d "matrix" that for each O_{id},
      * contains the oponent for team i on day d.
      * Domain is all teams.
      */
-    vector<int> O: 
+    vector< vector<int> > O;
     
     /**
      * i x d "matrix" that contains where team i
      * stays on day d.
      */
-    vector<int> V;
+    vector< vector<int> > V;
     
     /**
      * i x d "matrix" where C_{id} is the cost of 
      * travel of team i in day d.
      */
-    vector<int> C;
+    vector< vector<int> > C;
     
-    /****************************************************************/
+    // -----------------------------------------------------------------------------------
     
     /**
      * Constraint testing functions, according to Renjun Bao's original
@@ -71,7 +77,7 @@ class RTTP
   
   public:
     /**
-     * Constructor
+     * Constructor. Initializes all problem variables as well.
      */
     RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int maxConsecutiveGames);
     
@@ -80,7 +86,7 @@ class RTTP
      */
     ~RTTP();
         
-    /****************************************************************/
+    // -----------------------------------------------------------------------------------
     
     /**
      * Tests all restrictions on the current solution candidate
@@ -88,10 +94,18 @@ class RTTP
      */
     bool validSolution();
     
-    /****************************************************************/
+    // -----------------------------------------------------------------------------------
     
     /**
      * Evaluates the candidate solution and returns its cost
      */
     int objectiveFunction();
+    
+    // -----------------------------------------------------------------------------------
+    
+    int getMaxConsecutiveOffDays();
+    int getMaxConsecutiveGames();
+    int getNumberOfDays();
+    int getNumberOfTeams();
 };
+#endif

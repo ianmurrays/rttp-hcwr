@@ -9,6 +9,8 @@ lib = test/libUnitTest++.a
 test = test/RTTPTest
 rttp = build/RTTP
 
+rttp_files = *.cpp
+
 all: $(rttp) test
 
 $(rttp):
@@ -16,7 +18,7 @@ $(rttp):
 
 test:
 	@echo "---> Linking $(test)..."
-	@$(CXX) $(LDFLAGS) -o $(test) test/test.cpp $(lib)
+	@$(CXX) $(LDFLAGS) -o $(test) test/test.cpp $(rttp_files) $(lib)
 	@echo "---> Running unit tests..."
 	@./$(test)
 
