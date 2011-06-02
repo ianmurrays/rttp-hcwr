@@ -1,5 +1,7 @@
 #include "../rttp.h"
 
+#define PENDING(x) printf("[PENDING] %s\n", x)
+
 SUITE(RTTP)
 {
   TEST(ConstructorShouldAssignAllValues)
@@ -112,6 +114,33 @@ SUITE(RTTP)
     }
     
     CHECK( ! rttp->lengthOfOffDays());
+    
+    delete rttp;
+  }
+  
+  TEST(LengthOfAwayGames)
+  {
+    PENDING("LengthOfAwayGames");
+  }
+  
+  TEST(DoubleRoundRobinTournament)
+  {
+    RTTP * rttp = new RTTP(2, 2, 1, 1);
+    CHECK( ! rttp->doubleRoundRobinTournament());
+    
+    // Each team should play the other at home and away
+    rttp->G[0][0] = rttp->G[1][1] = G_HOMEGAME;
+    rttp->G[1][0] = rttp->G[0][1] = G_ROADGAME;
+    
+    rttp->O[0][0] = rttp->O[0][1] = 1;
+    rttp->O[1][0] = rttp->O[1][1] = 0;
+    
+    CHECK(rttp->doubleRoundRobinTournament());
+    
+    // Make an invalid combination
+    rttp->O[0][0] = 0; // Plays against himself 
+    
+    CHECK( ! rttp->doubleRoundRobinTournament());
     
     delete rttp;
   }
