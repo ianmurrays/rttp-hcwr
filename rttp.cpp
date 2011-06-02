@@ -230,3 +230,21 @@ bool RTTP::stayAtOpponentOnRoadGameDay()
 
   return true;
 }
+
+// -----------------------------------------------------------------------------------
+
+bool RTTP::stayAtPreviousVenueOnOffDay()
+{
+  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  {
+    for (size_t d = 1; d < this->numberOfDays; d++) // forall days d (had to start from d = 1 to avoid crashing)
+    {
+      if (this->G[i][d] == G_OFFDAY && this->V[i][d] != this->V[i][d - 1])
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
