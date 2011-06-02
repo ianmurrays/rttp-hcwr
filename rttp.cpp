@@ -249,3 +249,17 @@ bool RTTP::stayAtPreviousVenueOnOffDay()
 
   return true;
 }
+
+// -----------------------------------------------------------------------------------
+
+bool RTTP::validSolution()
+{
+  return this->noConsecutiveHomeGames() && 
+         this->lengthOfHomeGames() &&
+         this->lengthOfOffDays() && 
+         this->lengthOfAwayGames() && 
+         this->doubleRoundRobinTournament() &&
+         this->stayAtHomeOnHomeGameDay() && 
+         this->stayAtOpponentOnRoadGameDay() && 
+         this->stayAtPreviousVenueOnOffDay();
+}
