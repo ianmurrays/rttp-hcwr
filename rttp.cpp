@@ -194,3 +194,21 @@ bool RTTP::doubleRoundRobinTournament()
   
   return true;
 }
+
+// -----------------------------------------------------------------------------------
+
+bool RTTP::stayAtHomeOnHomeGameDay()
+{
+  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  {
+    for (size_t d = 0; d < this->numberOfDays; d++) // forall days d
+    {
+      if (this->G[i][d] == G_HOMEGAME && this->V[i][d] != i)
+      {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
