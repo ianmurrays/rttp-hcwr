@@ -212,3 +212,21 @@ bool RTTP::stayAtHomeOnHomeGameDay()
   
   return true;
 }
+
+// -----------------------------------------------------------------------------------
+
+bool RTTP::stayAtOpponentOnRoadGameDay()
+{
+  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  {
+    for (size_t d = 0; d < this->numberOfDays; d++) // forall days d
+    {
+      if (this->G[i][d] == G_ROADGAME && this->V[i][d] != this->O[i][d])
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}

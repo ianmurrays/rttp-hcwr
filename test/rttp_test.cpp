@@ -165,5 +165,32 @@ SUITE(RTTP)
     // Make it fail now
     rttp->V[0][0] = 1;
     CHECK( ! rttp->stayAtHomeOnHomeGameDay());
+    
+    delete rttp;
+  }
+  
+  TEST(StayAtOpponentOnRoadGameDay)
+  {
+    RTTP * rttp = new RTTP(2, 2, 1, 1);
+    
+    // Taken from previous test DoubleRoundRobinTournament
+    rttp->G[0][0] = rttp->G[1][1] = G_HOMEGAME;
+    rttp->G[1][0] = rttp->G[0][1] = G_ROADGAME;
+    
+    rttp->O[0][0] = rttp->O[0][1] = 1;
+    rttp->O[1][0] = rttp->O[1][1] = 0;
+    
+    // Make sure each team stays where they should
+    rttp->V[0][0] = rttp->V[1][0] = 0;
+    rttp->V[0][1] = rttp->V[1][1] = 1;
+    
+    CHECK(rttp->stayAtOpponentOnRoadGameDay());
+    
+    // Make it fail now
+    rttp->V[0][1] = 0; // He cant stay at his own venue
+    
+    CHECK( ! rttp->stayAtOpponentOnRoadGameDay());
+    
+    delete rttp;
   }
 }
