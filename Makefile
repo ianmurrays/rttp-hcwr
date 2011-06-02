@@ -18,7 +18,7 @@ $(rttp):
 
 test:
 	@echo "---> Linking $(test)..."
-	@$(CXX) $(LDFLAGS) -o $(test) test/test.cpp $(rttp_files) $(lib)
+	@$(CXX) -Wall -o $(test) test/test.cpp $(rttp_files) $(lib)
 	@echo "---> Running unit tests..."
 	@./$(test)
 

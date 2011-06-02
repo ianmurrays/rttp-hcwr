@@ -23,10 +23,10 @@ SUITE(RTTP)
   
   TEST(ConstructorShouldInitializeAllVariables)
   {
-    int numberOfTeams = 1,
-        numberOfDays = 2;
+    unsigned int numberOfTeams = 1,
+                 numberOfDays = 2;
     
-    RTTP * rttp = new RTTP(numberOfTeams, numberOfDays, 1, 1);
+    RTTP * rttp = new RTTP((int)numberOfTeams, (int)numberOfDays, 1, 1);
 
     CHECK_EQUAL(numberOfTeams, rttp->G.size());
     CHECK_EQUAL(numberOfDays, rttp->G[0].size()); // Check the first one only.
@@ -50,9 +50,9 @@ SUITE(RTTP)
     CHECK( ! rttp->noConsecutiveHomeGames()); // This should be invalid at the beginning.
 
     // Make them all valid
-    for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
+    for (size_t i = 0; i < (size_t)rttp->getNumberOfTeams(); i++)
     {
-      for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+      for (size_t d = 0; d < (size_t)rttp->getNumberOfDays(); d++)
       {
         rttp->G[i][d] = 1;
       }
@@ -74,9 +74,9 @@ SUITE(RTTP)
     CHECK( ! rttp->lengthOfHomeGames()); // This should be false at the beginning.
     
     // Make them all valid
-    for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
+    for (size_t i = 0; i < (size_t)rttp->getNumberOfTeams(); i++)
     {
-      for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+      for (size_t d = 0; d < (size_t)rttp->getNumberOfDays(); d++)
       {
         rttp->G[i][d] = 2;
       }
@@ -97,9 +97,9 @@ SUITE(RTTP)
     CHECK( ! rttp->lengthOfOffDays()); // Should be false upon instantiation.
     
     // Make them all valid
-    for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
+    for (size_t i = 0; i < (size_t)rttp->getNumberOfTeams(); i++)
     {
-      for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+      for (size_t d = 0; d < (size_t)rttp->getNumberOfDays(); d++)
       {
         rttp->G[i][d] = G_OFFDAY;
       }
@@ -108,7 +108,7 @@ SUITE(RTTP)
     CHECK(rttp->lengthOfOffDays()); 
     
     // Invalid combination, ie. a team that has no off days
-    for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+    for (size_t d = 0; d < (size_t)rttp->getNumberOfDays(); d++)
     {
       rttp->G[0][d] = G_HOMEGAME;
     }

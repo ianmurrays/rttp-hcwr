@@ -8,14 +8,14 @@ RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int m
   this->maxConsecutiveGames = maxConsecutiveGames;
   
   // Initialize all problem variables
-  for (size_t i = 0; i < this->numberOfTeams; i++)
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
   {
     vector<int> G_temp,
                 O_temp,
                 V_temp, 
                 C_temp;
     
-    for (size_t j = 0; j < this->numberOfDays; j++)
+    for (size_t j = 0; j < (size_t)this->numberOfDays; j++)
     {
       G_temp.push_back(0);
       O_temp.push_back(0);
@@ -69,9 +69,9 @@ int RTTP::getMaxConsecutiveGames()
 
 bool RTTP::noConsecutiveHomeGames()
 { 
-  for (size_t i = 0; i < this->numberOfTeams; i++) // for each team
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // for each team
   {
-    for (size_t d = 0; d < (this->numberOfDays - 1); d++) // for each day - 1
+    for (size_t d = 0; d < (size_t)(this->numberOfDays - 1); d++) // for each day - 1
     {
       int sumOfG = 0;
       
@@ -97,13 +97,13 @@ bool RTTP::noConsecutiveHomeGames()
 
 bool RTTP::lengthOfHomeGames()
 {
-  for (size_t i = 0; i < this->numberOfTeams; i++) // for each team
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // for each team
   {
-    for (size_t d = 0; d < (this->numberOfDays - this->maxConsecutiveGames); d++) // for each day - max_cons_games
+    for (size_t d = 0; d < (size_t)(this->numberOfDays - this->maxConsecutiveGames); d++) // for each day - max_cons_games
     {
       int sumOfG = 0;
       
-      for (size_t k = 0; k <= this->maxConsecutiveGames; k++)
+      for (size_t k = 0; k <= (size_t)this->maxConsecutiveGames; k++)
       {
         if (this->G[i][d + k] != G_OFFDAY) // ie. if team is playing, wherever ...
         {
@@ -125,13 +125,13 @@ bool RTTP::lengthOfHomeGames()
 
 bool RTTP::lengthOfOffDays()
 {
-  for (size_t i = 0; i < this->numberOfTeams; i++) // for each team
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // for each team
   {
-    for (size_t d = 0; d < (this->numberOfDays - this->maxConsecutiveOffDays); d++) // for each day - max_cons_off_days
+    for (size_t d = 0; d < (size_t)(this->numberOfDays - this->maxConsecutiveOffDays); d++) // for each day - max_cons_off_days
     {
       int sumOfG = 0;
       
-      for (size_t k = 0; k <= this->maxConsecutiveOffDays; k++)
+      for (size_t k = 0; k <= (size_t)this->maxConsecutiveOffDays; k++)
       {
         if (this->G[i][d + k] == G_OFFDAY) // ie. if team is not playing
         {
@@ -154,31 +154,32 @@ bool RTTP::lengthOfOffDays()
 bool RTTP::lengthOfAwayGames()
 {
   // TODO: I don't understand this constraint.
+  return false;
 }
 
 // -----------------------------------------------------------------------------------
 
 bool RTTP::doubleRoundRobinTournament()
 {
-  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // forall teams i
   {
-    for (size_t j = 0; j < this->numberOfTeams; j++) // forall teams j
+    for (size_t j = 0; j < (size_t)this->numberOfTeams; j++) // forall teams j
     {
       if (i != j)
       {
         int sumOfGO_1 = 0, // 4.29
             sumOfGO_2 = 0; // 4.30
             
-        for (size_t d = 0; d < this->numberOfDays; d++) // sum over all days
+        for (size_t d = 0; d < (size_t)this->numberOfDays; d++) // sum over all days
         {
           // Restriction 4.29
-          if (this->G[i][d] == G_ROADGAME && this->O[i][d] == j)
+          if (this->G[i][d] == G_ROADGAME && this->O[i][d] == (int)j)
           {
             sumOfGO_1++;
           }
           
           // Restriction 4.30
-          if (this->G[i][d] == G_HOMEGAME && this->O[i][d] == j)
+          if (this->G[i][d] == G_HOMEGAME && this->O[i][d] == (int)j)
           {
             sumOfGO_2++;
           }
@@ -199,11 +200,11 @@ bool RTTP::doubleRoundRobinTournament()
 
 bool RTTP::stayAtHomeOnHomeGameDay()
 {
-  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // forall teams i
   {
-    for (size_t d = 0; d < this->numberOfDays; d++) // forall days d
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++) // forall days d
     {
-      if (this->G[i][d] == G_HOMEGAME && this->V[i][d] != i)
+      if (this->G[i][d] == G_HOMEGAME && this->V[i][d] != (int)i)
       {
         return false;
       }
@@ -217,9 +218,9 @@ bool RTTP::stayAtHomeOnHomeGameDay()
 
 bool RTTP::stayAtOpponentOnRoadGameDay()
 {
-  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // forall teams i
   {
-    for (size_t d = 0; d < this->numberOfDays; d++) // forall days d
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++) // forall days d
     {
       if (this->G[i][d] == G_ROADGAME && this->V[i][d] != this->O[i][d])
       {
@@ -235,9 +236,9 @@ bool RTTP::stayAtOpponentOnRoadGameDay()
 
 bool RTTP::stayAtPreviousVenueOnOffDay()
 {
-  for (size_t i = 0; i < this->numberOfTeams; i++) // forall teams i
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // forall teams i
   {
-    for (size_t d = 1; d < this->numberOfDays; d++) // forall days d (had to start from d = 1 to avoid crashing)
+    for (size_t d = 1; d < (size_t)this->numberOfDays; d++) // forall days d (had to start from d = 1 to avoid crashing)
     {
       if (this->G[i][d] == G_OFFDAY && this->V[i][d] != this->V[i][d - 1])
       {
