@@ -106,3 +106,29 @@ bool RTTP::lengthOfHomeGames()
   
   return true;
 }
+
+bool RTTP::lengthOfOffDays()
+{
+  for (size_t i = 0; i < this->numberOfTeams; i++) // for each team
+  {
+    for (size_t d = 0; d < (this->numberOfDays - this->maxConsecutiveOffDays); d++) // for each day - max_cons_off_days
+    {
+      int sumOfG = 0;
+      
+      for (size_t k = 0; k <= this->maxConsecutiveOffDays; k++)
+      {
+        if (this->G[i][d + k] == G_OFFDAY) // ie. if team is not playing
+        {
+          sumOfG++;
+        }
+      }
+      
+      if (sumOfG < 1) // FIXME: I'm not sure this is correct.
+      {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}

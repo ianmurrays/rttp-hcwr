@@ -72,7 +72,6 @@ SUITE(RTTP)
     CHECK( ! rttp->lengthOfHomeGames()); // This should be false at the beginning.
     
     // Make them all valid
-    // Make them all valid
     for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
     {
       for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
@@ -86,6 +85,33 @@ SUITE(RTTP)
     // Make an invalid combination
     rttp->G[0][1] = rttp->G[0][2] = 1;
     CHECK( ! rttp->lengthOfHomeGames());
+    
+    delete rttp;
+  }
+  
+  TEST(LengthOfOffDays)
+  {
+    RTTP * rttp = new RTTP(2, 4, 1, 1);
+    CHECK( ! rttp->lengthOfOffDays()); // Should be false upon instantiation.
+    
+    // Make them all valid
+    for (size_t i = 0; i < rttp->getNumberOfTeams(); i++)
+    {
+      for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+      {
+        rttp->G[i][d] = G_OFFDAY;
+      }
+    }
+    
+    CHECK(rttp->lengthOfOffDays()); 
+    
+    // Invalid combination, ie. a team that has no off days
+    for (size_t d = 0; d < rttp->getNumberOfDays(); d++)
+    {
+      rttp->G[0][d] = G_HOMEGAME;
+    }
+    
+    CHECK( ! rttp->lengthOfOffDays());
     
     delete rttp;
   }
