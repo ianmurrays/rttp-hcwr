@@ -65,6 +65,11 @@ class RTTP
      */
     vector< vector<int> > C;
     
+    /**
+     * Holds travel costs 
+     */
+    vector< vector<int> > travelCosts;
+    
     // -----------------------------------------------------------------------------------
     
     /**
@@ -105,6 +110,14 @@ class RTTP
      * Evaluates the candidate solution and returns its cost
      */
     int objectiveFunction();
+    
+    // -----------------------------------------------------------------------------------
+    
+    /**
+     * Sets the cost matrix. Should be numberOfTeams x numberOfTeams wide
+     */
+    void setTravelCosts(vector< vector<int> > cost);
+    void setIndividualCost(size_t teamA, size_t teamB, int cost); // This seems more useful
     
     // -----------------------------------------------------------------------------------
     

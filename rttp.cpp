@@ -28,6 +28,19 @@ RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int m
     this->V.push_back(V_temp);
     this->C.push_back(C_temp);
   }
+  
+  // Initialize travelCosts
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    vector<int> tC_temp;
+    
+    for (size_t j = 0; j < (size_t)this->numberOfTeams; j++)
+    {
+      tC_temp.push_back(0);
+    }
+    
+    this->travelCosts.push_back(tC_temp);
+  }
 }
 
 // -----------------------------------------------------------------------------------
@@ -41,12 +54,15 @@ RTTP::~RTTP()
     this->O[i].clear();
     this->V[i].clear();
     this->C[i].clear();
+    
+    this->travelCosts[i].clear();
   }
   
   this->G.clear();
   this->O.clear();
   this->V.clear();
   this->C.clear();
+  this->travelCosts.clear();
 }
 
 // -----------------------------------------------------------------------------------
@@ -274,4 +290,16 @@ bool RTTP::validSolution()
          this->stayAtHomeOnHomeGameDay() && 
          this->stayAtOpponentOnRoadGameDay() && 
          this->stayAtPreviousVenueOnOffDay();
+}
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
+{
+  if (teamA == teamB)
+  {
+    cost = 0; // Cost should be zero to travel from A to A.
+  }
+  
+  this->travelCosts[teamA][teamB] = this->travelCosts[teamB][teamA] = cost;
 }

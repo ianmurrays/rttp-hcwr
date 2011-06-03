@@ -226,4 +226,21 @@ SUITE(RTTP)
     
     delete rttp;
   }
+  
+  TEST(SetIndividualCost)
+  {
+    RTTP * rttp = new RTTP(2, 3, 1, 1);
+    
+    rttp->setIndividualCost(0, 1, 10);
+    
+    // Should set travel costs equally
+    CHECK_EQUAL(10, rttp->travelCosts[0][1]);
+    CHECK_EQUAL(10, rttp->travelCosts[1][0]);
+    
+    // Should overwrite cost to travel from A to A.
+    rttp->setIndividualCost(0, 0, 1);
+    CHECK_EQUAL(0, rttp->travelCosts[0][0]);
+    
+    delete rttp;
+  }
 }
