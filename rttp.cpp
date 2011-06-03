@@ -34,7 +34,19 @@ RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int m
 
 RTTP::~RTTP()
 {
-  // TODO: Free up memory?
+  // Free all four variables
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    this->G[i].clear();
+    this->O[i].clear();
+    this->V[i].clear();
+    this->C[i].clear();
+  }
+  
+  this->G.clear();
+  this->O.clear();
+  this->V.clear();
+  this->C.clear();
 }
 
 // -----------------------------------------------------------------------------------
@@ -154,7 +166,7 @@ bool RTTP::lengthOfOffDays()
 bool RTTP::lengthOfAwayGames()
 {
   // TODO: I don't understand this constraint.
-  return false;
+  return true;
 }
 
 // -----------------------------------------------------------------------------------

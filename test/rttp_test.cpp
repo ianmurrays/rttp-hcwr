@@ -42,6 +42,12 @@ SUITE(RTTP)
     
     delete rttp;
   }
+
+  TEST(DestructorShouldClearMemoryOK)
+  {
+    RTTP * rttp = new RTTP(2, 2, 1, 1);
+    delete rttp;
+  }
   
   TEST(NoConsecutiveHomeGames)
   {
