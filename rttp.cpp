@@ -294,7 +294,7 @@ bool RTTP::validSolution()
 
 // -----------------------------------------------------------------------------------
 
-void RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
+RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 {
   if (teamA == teamB)
   {
@@ -302,4 +302,26 @@ void RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
   }
   
   this->travelCosts[teamA][teamB] = this->travelCosts[teamB][teamA] = cost;
+  
+  return this; // Concatenation :D
+}
+
+// -----------------------------------------------------------------------------------
+
+int RTTP::objectiveFunction()
+{
+  int cost = 0;
+  
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    int teamCost = 0;
+    for (size_t d = 1; d < (size_t)this->numberOfDays; d++)
+    {
+      teamCost += this->travelCosts[this->V[i][d - 1]][this->V[i][d]];
+    }
+    
+    cost += teamCost;
+  }
+  
+  return cost;
 }

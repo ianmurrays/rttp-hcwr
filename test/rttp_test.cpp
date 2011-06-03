@@ -243,4 +243,30 @@ SUITE(RTTP)
     
     delete rttp;
   }
+  
+  TEST(ObjectiveFunction)
+  {
+    RTTP * rttp = new RTTP(2, 3, 1, 1);
+    
+    // Taken from previous test DoubleRoundRobinTournament
+    rttp->G[0][0] = rttp->G[1][2] = G_HOMEGAME;
+    rttp->G[1][0] = rttp->G[0][2] = G_ROADGAME;
+    
+    rttp->G[0][1] = rttp->G[1][1] = G_OFFDAY; // Give them the 2nd day off
+    
+    rttp->O[0][0] = rttp->O[0][2] = 1;
+    rttp->O[1][0] = rttp->O[1][2] = 0;
+    
+    // Make sure each team stays where they should
+    rttp->V[0][0] = rttp->V[1][0] = 0;
+    rttp->V[0][1] = rttp->V[1][1] = 0; // Both teams should stay at 0's
+    rttp->V[0][2] = rttp->V[1][2] = 1;
+    
+    // Create costs
+    rttp->setIndividualCost(0, 1, 10);
+    
+    CHECK_EQUAL(20, rttp->objectiveFunction());
+    
+    delete rttp;
+  }
 }

@@ -117,7 +117,7 @@ class RTTP
      * Sets the cost matrix. Should be numberOfTeams x numberOfTeams wide
      */
     void setTravelCosts(vector< vector<int> > cost);
-    void setIndividualCost(size_t teamA, size_t teamB, int cost); // This seems more useful
+    RTTP * setIndividualCost(size_t teamA, size_t teamB, int cost); // This seems more useful
     
     // -----------------------------------------------------------------------------------
     
