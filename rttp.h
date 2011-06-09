@@ -18,9 +18,9 @@ using namespace std;
 class RTTP
 {
   #ifndef _RTTP_TEST // This allows us to test private methods and variables easily, maybe I shouldn't do this :(
-  public:
-  #else
   private:
+  #else
+  public:
   #endif
     /**
      * Defines the maximum days a team can have bias.

@@ -9,7 +9,7 @@ lib = test/libUnitTest++.a
 test = test/RTTPTest
 rttp = build/RTTP
 
-rttp_files = *.cpp
+rttp_files = rttp.cpp hcwr.cpp
 
 all: $(rttp) test
 
@@ -21,6 +21,10 @@ test:
 	@$(CXX) -Wall -o $(test) test/test.cpp $(rttp_files) $(lib)
 	@echo "---> Running unit tests..."
 	@./$(test)
+	
+test_no_exec:
+	@echo "---> Linking $(test)..."
+	@$(CXX) -Wall -o $(test) -g test/test.cpp $(rttp_files) $(lib)
 
 clean:
 	@echo "---> Cleaning test files"
