@@ -295,4 +295,11 @@ SUITE(RTTP)
     rttp->numberOfRestrictionsNotMet();
     delete rttp;
   }
+  
+  TEST(GenerateRandomSolution)
+  {
+    RTTP * rttp = new RTTP(2, 3, 1, 1);
+    rttp->generateRandomSolution();
+    delete rttp;
+  }
 }

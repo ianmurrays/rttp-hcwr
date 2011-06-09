@@ -403,3 +403,30 @@ int RTTP::numberOfRestrictionsNotMet()
   
   return notMet;
 }
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::generateRandomSolution()
+{
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+    {
+      size_t new_i = (size_t)(rand() % (this->numberOfTeams + 1) - 1);
+
+      this->O[i][d] = new_i;
+
+      // Set Game variable as well
+      if (this->O[i][d] == O_NOOPONENT)
+      {
+        this->G[i][d] = G_OFFDAY;
+      }
+      else
+      {
+        this->G[i][d] = (rand() % 2); // G_HOMEGAME or G_ROADGAME
+      }
+    }
+  }
+  
+  this->fixVariables();
+}

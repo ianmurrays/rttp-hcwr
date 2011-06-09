@@ -140,5 +140,9 @@ class RTTP
     
     void generateNeighbour();
     void fixVariables();
+    
+    // -----------------------------------------------------------------------------------
+    
+    void generateRandomSolution(); // Not necessarily valid
 };
 #endif
