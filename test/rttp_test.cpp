@@ -269,4 +269,29 @@ SUITE(RTTP)
     
     delete rttp;
   }
+  
+  //
+  // The following tests are not tests per-se :(
+  //
+  
+  TEST(GenerateNeighbour)
+  {
+    RTTP * rttp = new RTTP(2, 3, 1, 1);
+    rttp->generateNeighbour();
+    delete rttp;
+  }
+  
+  TEST(FixVariables)
+  {
+    RTTP * rttp = new RTTP(2, 3, 1, 1);
+    rttp->fixVariables();
+    delete rttp;
+  }
+  
+  TEST(NumberOfRestrictionsNotMet)
+  {
+    RTTP * rttp = new RTTP(2, 3, 1, 1);
+    rttp->numberOfRestrictionsNotMet();
+    delete rttp;
+  }
 }

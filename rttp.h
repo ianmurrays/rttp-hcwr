@@ -1,4 +1,6 @@
 #include <vector>
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -8,6 +10,8 @@ using namespace std;
 #define G_HOMEGAME 0
 #define G_ROADGAME 1
 #define G_OFFDAY   2
+
+#define O_NOOPONENT -1
 
 class RTTP
 {
@@ -113,6 +117,10 @@ class RTTP
     
     // -----------------------------------------------------------------------------------
     
+    int numberOfRestrictionsNotMet();
+    
+    // -----------------------------------------------------------------------------------
+    
     /**
      * Sets the cost matrix. Should be numberOfTeams x numberOfTeams wide
      */
@@ -125,5 +133,10 @@ class RTTP
     int getMaxConsecutiveGames();
     int getNumberOfDays();
     int getNumberOfTeams();
+    
+    // -----------------------------------------------------------------------------------
+    
+    void generateNeighbour();
+    void fixVariables();
 };
 #endif

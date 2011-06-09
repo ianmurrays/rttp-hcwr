@@ -27,6 +27,9 @@ RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int m
     this->O.push_back(O_temp);
     this->V.push_back(V_temp);
     this->C.push_back(C_temp);
+    
+    // Seed the random number generator
+    srand((unsigned)time(0));
   }
   
   // Initialize travelCosts
@@ -324,4 +327,79 @@ int RTTP::objectiveFunction()
   }
   
   return cost;
+}
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::generateNeighbour()
+{
+  // Set the oponent of a random team on a random date to a random team, 
+  // and fix other variables accordingly.
+  size_t i = (size_t)(rand() % this->numberOfTeams);
+  size_t d = (size_t)(rand() % this->numberOfDays);
+  size_t new_i = (size_t)(rand() % (this->numberOfTeams + 1) - 1);
+  
+  this->O[i][d] = new_i;
+  
+  // Set Game variable as well
+  if (this->O[i][d] == O_NOOPONENT)
+  {
+    this->G[i][d] = G_OFFDAY;
+  }
+  else
+  {
+    this->G[i][d] = (rand() % 2); // G_HOMEGAME or G_ROADGAME
+  }
+  
+  this->fixVariables(); // This fixes the Venues variable.
+}
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::fixVariables()
+{
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+    {
+      switch (this->G[i][d])
+      {  
+        case G_HOMEGAME:
+        this->V[i][d] = i;
+        break;
+        
+        case G_ROADGAME:
+        this->V[i][d] = this->O[i][d];
+        break;
+        
+        case G_OFFDAY:
+        if (d > 0) 
+        {
+          this->V[i][d] = this->V[i][d - 1];
+        }
+        else
+        {
+          this->V[i][d] = i;
+        }
+        break;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------------
+
+int RTTP::numberOfRestrictionsNotMet()
+{
+  int notMet = 0;
+  notMet += this->noConsecutiveHomeGames() ? 1 : 0;
+  notMet += this->lengthOfHomeGames() ? 1 : 0;
+  notMet += this->lengthOfOffDays() ? 1 : 0;
+  notMet += this->lengthOfAwayGames() ? 1 : 0;
+  notMet += this->doubleRoundRobinTournament() ? 1 : 0;
+  notMet += this->stayAtHomeOnHomeGameDay() ? 1 : 0;
+  notMet += this->stayAtOpponentOnRoadGameDay() ? 1 : 0;
+  notMet += this->stayAtPreviousVenueOnOffDay() ? 1 : 0;
+  
+  return notMet;
 }
