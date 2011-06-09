@@ -13,6 +13,8 @@ using namespace std;
 
 #define O_NOOPONENT -1
 
+#define PENALIZE_COST 500
+
 class RTTP
 {
   #ifndef _RTTP_TEST // This allows us to test private methods and variables easily, maybe I shouldn't do this :(

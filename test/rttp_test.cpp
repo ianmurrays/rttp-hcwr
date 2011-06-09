@@ -265,6 +265,7 @@ SUITE(RTTP)
     // Create costs
     rttp->setIndividualCost(0, 1, 10);
     
+    CHECK(rttp->validSolution());
     CHECK_EQUAL(20, rttp->objectiveFunction());
     
     delete rttp;

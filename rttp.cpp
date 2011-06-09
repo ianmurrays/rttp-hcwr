@@ -326,7 +326,7 @@ int RTTP::objectiveFunction()
     cost += teamCost;
   }
   
-  return cost;
+  return cost - this->numberOfRestrictionsNotMet() * PENALIZE_COST;
 }
 
 // -----------------------------------------------------------------------------------
@@ -392,14 +392,14 @@ void RTTP::fixVariables()
 int RTTP::numberOfRestrictionsNotMet()
 {
   int notMet = 0;
-  notMet += this->noConsecutiveHomeGames() ? 1 : 0;
-  notMet += this->lengthOfHomeGames() ? 1 : 0;
-  notMet += this->lengthOfOffDays() ? 1 : 0;
-  notMet += this->lengthOfAwayGames() ? 1 : 0;
-  notMet += this->doubleRoundRobinTournament() ? 1 : 0;
-  notMet += this->stayAtHomeOnHomeGameDay() ? 1 : 0;
-  notMet += this->stayAtOpponentOnRoadGameDay() ? 1 : 0;
-  notMet += this->stayAtPreviousVenueOnOffDay() ? 1 : 0;
+  notMet += this->noConsecutiveHomeGames() ? 0 : 1;
+  notMet += this->lengthOfHomeGames() ? 0 : 1;
+  notMet += this->lengthOfOffDays() ? 0 : 1;
+  notMet += this->lengthOfAwayGames() ? 0 : 1;
+  notMet += this->doubleRoundRobinTournament() ? 0 : 1;
+  notMet += this->stayAtHomeOnHomeGameDay() ? 0 : 1;
+  notMet += this->stayAtOpponentOnRoadGameDay() ? 0 : 1;
+  notMet += this->stayAtPreviousVenueOnOffDay() ? 0 : 1;
   
   return notMet;
 }
