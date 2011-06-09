@@ -326,7 +326,7 @@ int RTTP::objectiveFunction()
     cost += teamCost;
   }
   
-  return cost - this->numberOfRestrictionsNotMet() * PENALIZE_COST;
+  return cost + this->numberOfRestrictionsNotMet() * PENALIZE_COST;
 }
 
 // -----------------------------------------------------------------------------------
