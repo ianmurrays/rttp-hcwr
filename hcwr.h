@@ -3,13 +3,18 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <csignal>
+#include <iostream>
 #include "rttp.h"
+
+using namespace std;
+
+#ifndef _HCWR_HEADER
+#define _HCWR_HEADER
 
 #define OFF_DAYS 1
 #define MAX_CONSECUTIVE_OFF_DAYS 1
 #define MAX_CONSECUTIVE_GAMES 4
-
-using namespace std;
 
 class HCWR
 {
@@ -30,6 +35,13 @@ class HCWR
     vector< vector<int> > G, O, V;
     
     /**
+     * Other info about the current best solution
+     */
+    bool valid;
+    int cost;
+    int restrictionsNotMet;
+    
+    /**
      * Holds RTTP instance
      */
     RTTP * rttp;
@@ -38,5 +50,9 @@ class HCWR
     HCWR(string input, int maxIterations, int maxRestarts);
     ~HCWR();
     
+    bool continue_iterating; // This is changed to false when SIGINT is captured
+    
     void start();
+    void storeCurrentSolutionAsBest();
 };
+#endif

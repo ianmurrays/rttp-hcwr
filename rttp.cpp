@@ -1,4 +1,6 @@
 #include "rttp.h"
+#include "schedule.cpp" // Includes a round-robin scheduler
+#include <iostream>
 
 RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int maxConsecutiveGames)
 {
@@ -313,6 +315,13 @@ RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 
 int RTTP::objectiveFunction()
 {
+  return this->objectiveFunctionNotPenalized() + this->numberOfRestrictionsNotMet() * PENALIZE_COST;
+}
+
+// -----------------------------------------------------------------------------------
+
+int RTTP::objectiveFunctionNotPenalized() 
+{
   int cost = 0;
   
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
@@ -326,7 +335,7 @@ int RTTP::objectiveFunction()
     cost += teamCost;
   }
   
-  return cost + this->numberOfRestrictionsNotMet() * PENALIZE_COST;
+  return cost;
 }
 
 // -----------------------------------------------------------------------------------
@@ -352,6 +361,83 @@ void RTTP::generateNeighbour()
   }
   
   this->fixVariables(); // This fixes the Venues variable.
+}
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::generateBestNeighbour()
+{
+  vector< vector<int> > Gor = this->G, 
+                        Oor = this->O, 
+                        Vor = this->V,
+                        G, O, V;
+  
+  bool foundBetter = false;
+  int cost = this->objectiveFunction();
+  
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+    {
+      // Deprecated code
+      if (false)
+      {
+        //*
+        size_t new_i = (size_t)(rand() % (this->numberOfTeams + 1) - 1);
+        this->O[i][d] = new_i;
+        //*/
+        //this->O[i][d] = (this->O[i][d] + 1 == this->numberOfTeams) ? -1 : (this->O[i][d] + 1);
+
+        // Set Game variable as well
+        if (this->O[i][d] == O_NOOPONENT)
+        {
+          this->G[i][d] = G_OFFDAY;
+        }
+        else
+        {
+          this->G[i][d] = (rand() % 2); // G_HOMEGAME or G_ROADGAME
+
+          // Force some doubleRoundRobin magic
+          //*
+          size_t new_d = (size_t)(rand() % this->numberOfDays);
+          this->O[i][new_d] = this->O[i][d]; // He should play the same opponent twice
+          this->G[i][new_d] = this->G[i][d] == G_HOMEGAME ? G_ROADGAME : G_HOMEGAME;
+          //*/
+        }
+      }
+      
+      if (rand() < SWAP_GAMETYPE_THRESHOLD)
+      {
+        int temp = this->G[i][d];
+        this->G[i][d] = this->G[this->O[i][d]][d];
+        this->G[this->O[i][d]][d] = temp;
+      }
+      
+      this->fixVariables(); // This fixes the Venues variable.
+      
+      if (this->objectiveFunction() < cost && this->doubleRoundRobinTournament())
+      {
+        foundBetter = true;
+        G = this->G;
+        O = this->O;
+        V = this->V;
+        cost = this->objectiveFunction();
+      }
+    }
+  }
+  
+  if ( ! foundBetter)
+  {
+    this->G = Gor;
+    this->O = Oor;
+    this->V = Vor;
+  }
+  else
+  {
+    this->G = G;
+    this->O = O;
+    this->V = V;
+  }
 }
 
 // -----------------------------------------------------------------------------------
@@ -392,14 +478,14 @@ void RTTP::fixVariables()
 int RTTP::numberOfRestrictionsNotMet()
 {
   int notMet = 0;
-  notMet += this->noConsecutiveHomeGames() ? 0 : 1;
-  notMet += this->lengthOfHomeGames() ? 0 : 1;
-  notMet += this->lengthOfOffDays() ? 0 : 1;
-  notMet += this->lengthOfAwayGames() ? 0 : 1;
-  notMet += this->doubleRoundRobinTournament() ? 0 : 1;
-  notMet += this->stayAtHomeOnHomeGameDay() ? 0 : 1;
-  notMet += this->stayAtOpponentOnRoadGameDay() ? 0 : 1;
-  notMet += this->stayAtPreviousVenueOnOffDay() ? 0 : 1;
+  notMet += (this->noConsecutiveHomeGames() ? 0 : 1);
+  notMet += (this->lengthOfHomeGames() ? 0 : 1);
+  notMet += (this->lengthOfOffDays() ? 0 : 1);
+  notMet += (this->lengthOfAwayGames() ? 0 : 1);
+  notMet += (this->doubleRoundRobinTournament() ? 0 : 1);
+  notMet += (this->stayAtHomeOnHomeGameDay() ? 0 : 1);
+  notMet += (this->stayAtOpponentOnRoadGameDay() ? 0 : 1);
+  notMet += (this->stayAtPreviousVenueOnOffDay() ? 0 : 1);
   
   return notMet;
 }
@@ -429,4 +515,55 @@ void RTTP::generateRandomSolution()
   }
   
   this->fixVariables();
+}
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::generateInitialDoubleRoundRobinSolution()
+{
+  Scheduler sched; // Will be used to schedule a RR tournament
+  sched.schedule(this->numberOfTeams);
+  
+  // Let's use that schedule to create an initial (not necesarilly valid)
+  // solution.
+  int column = 1;
+  for (int r = 1; r <= this->numberOfTeams - 1; r++) 
+  {
+    for (int m = 1; m <= this->numberOfTeams / 2; m++) 
+    {
+      int team_1 = ((rand() % 2) ? sched.tourn[column].one : sched.tourn[column].two) - 1,
+          team_2 = ((team_1 == sched.tourn[column].two - 1) ? sched.tourn[column].one : sched.tourn[column].two) - 1;
+      
+      int week = r - 1;
+      
+      this->O[team_1][week] = team_2;
+      this->O[team_2][week] = team_1;
+      int game_type = rand() % 2;
+      this->G[team_1][week] = game_type;
+      this->G[team_2][week] = (game_type == G_ROADGAME ? G_HOMEGAME : G_ROADGAME);
+      //this->V[team_1][week] = this->V[team_2][week] = team_1;
+      
+      // Double round robin
+      int new_week = week + (this->numberOfTeams - 1);
+      this->O[team_1][new_week] = team_2;
+      this->O[team_2][new_week] = team_1;
+      this->G[team_1][new_week] = (game_type == G_ROADGAME ? G_HOMEGAME : G_ROADGAME);
+      this->G[team_2][new_week] = game_type;
+      //this->V[team_1][new_week] = this->V[team_2][new_week] = team_1;
+      
+      column++;
+    }
+  }
+  
+  // Add enough days to cover the off days configured
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t d = (2 * (this->numberOfTeams - 1)); d < (size_t)this->numberOfDays; d++)
+    {
+      this->O[i][d] = O_NOOPONENT;
+      this->G[i][d] = G_OFFDAY;
+    }
+  }
+  
+  this->fixVariables(); // Fixes venues.
 }

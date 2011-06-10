@@ -13,7 +13,9 @@ using namespace std;
 
 #define O_NOOPONENT -1
 
-#define PENALIZE_COST 500
+#define PENALIZE_COST 10000
+
+#define SWAP_GAMETYPE_THRESHOLD 0.7 // 70% prob of swaping game types on a day
 
 class RTTP
 {
@@ -43,6 +45,18 @@ class RTTP
     int numberOfTeams;
     
     /**
+     * i x d "matrix" where C_{id} is the cost of 
+     * travel of team i in day d.
+     */
+    vector< vector<int> > C;
+    
+    /**
+     * Holds travel costs 
+     */
+    vector< vector<int> > travelCosts;
+  
+  public:
+    /**
      * i x d "matrix" that for each G_{id}, 
      * will be:
      *  0: if team i has a home game on day d
@@ -65,33 +79,6 @@ class RTTP
      */
     vector< vector<int> > V;
     
-    /**
-     * i x d "matrix" where C_{id} is the cost of 
-     * travel of team i in day d.
-     */
-    vector< vector<int> > C;
-    
-    /**
-     * Holds travel costs 
-     */
-    vector< vector<int> > travelCosts;
-    
-    // -----------------------------------------------------------------------------------
-    
-    /**
-     * Constraint testing functions, according to Renjun Bao's original
-     * paper for RTTP.
-     */
-    bool noConsecutiveHomeGames(); /* 4.25 */
-    bool lengthOfHomeGames(); /* 4.26 */
-    bool lengthOfOffDays(); /* 4.27 */
-    bool lengthOfAwayGames(); /* 4.28 */
-    bool doubleRoundRobinTournament(); /* 4.29, 4.30 */
-    bool stayAtHomeOnHomeGameDay(); /* 4.31 */
-    bool stayAtOpponentOnRoadGameDay(); /* 4.32 */
-    bool stayAtPreviousVenueOnOffDay(); /* 4.33 */
-  
-  public:
     /**
      * Constructor. Initializes all problem variables as well.
      */
@@ -116,6 +103,7 @@ class RTTP
      * Evaluates the candidate solution and returns its cost
      */
     int objectiveFunction();
+    int objectiveFunctionNotPenalized();
     
     // -----------------------------------------------------------------------------------
     
@@ -138,11 +126,28 @@ class RTTP
     
     // -----------------------------------------------------------------------------------
     
-    void generateNeighbour();
+    void generateNeighbour(); // First Improvement
+    void generateBestNeighbour(); // Best Improvement
     void fixVariables();
     
     // -----------------------------------------------------------------------------------
     
     void generateRandomSolution(); // Not necessarily valid
+    void generateInitialDoubleRoundRobinSolution();
+    
+    // -----------------------------------------------------------------------------------
+    
+    /**
+     * Constraint testing functions, according to Renjun Bao's original
+     * paper for RTTP.
+     */
+    bool noConsecutiveHomeGames(); /* 4.25 */
+    bool lengthOfHomeGames(); /* 4.26 */
+    bool lengthOfOffDays(); /* 4.27 */
+    bool lengthOfAwayGames(); /* 4.28 */
+    bool doubleRoundRobinTournament(); /* 4.29, 4.30 */
+    bool stayAtHomeOnHomeGameDay(); /* 4.31 */
+    bool stayAtOpponentOnRoadGameDay(); /* 4.32 */
+    bool stayAtPreviousVenueOnOffDay(); /* 4.33 */
 };
 #endif

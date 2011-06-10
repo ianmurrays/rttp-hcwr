@@ -11,10 +11,12 @@ rttp = build/RTTP
 
 rttp_files = rttp.cpp hcwr.cpp
 
-all: $(rttp) test
+all: $(rttp)
 
 $(rttp):
-	@echo Build not implemented
+	@echo "---> Building..."
+	@$(CXX) -Wall -g -o $(rttp) main.cpp $(rttp_files)
+	@echo "---> Done."
 
 test:
 	@echo "---> Linking $(test)..."

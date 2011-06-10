@@ -1,9 +1,37 @@
 #include <iostream>
+#include "hcwr.h"
 
-#ifdef _RTTP_TEST // Need to avoid declaring this when testing.
-int main (int argc, char * const argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+#define MAX_ITERATIONS 1000
+#define MAX_RESTARTS 100
+
+using namespace std;
+
+HCWR * hcwr;
+
+void capture_sigint(int sig)
+{
+  cout << "---> Captured SIGINT! Stopping." << endl;
+  hcwr->continue_iterating = false;
 }
-#endif
+
+int main (int argc, char * const argv[]) {
+  string filename;
+  
+  if (argc != 2) 
+  {
+    cout << "Usage: " << argv[0] << " datafile.txt" << endl;
+    exit(1);
+  }
+  
+  filename = argv[1];
+  
+  hcwr = new HCWR(filename, MAX_ITERATIONS, MAX_RESTARTS);
+  
+  signal(SIGINT, &capture_sigint);
+  
+  hcwr->start();
+  
+  delete hcwr;
+  
+  return 0;
+}
