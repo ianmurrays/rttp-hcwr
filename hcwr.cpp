@@ -128,7 +128,7 @@ void HCWR::start()
       //OUTPUT_END;
       
       // Is it better?
-      if (this->rttp->objectiveFunction() < this->cost)
+      if (this->rttp->objectiveFunction() < this->cost && this->rttp->nonRelaxedRestrictions()) // The latter to avoid accepting randomized invalid solutions as better
       {
         // It is, store it.
         this->storeCurrentSolutionAsBest();
@@ -136,7 +136,7 @@ void HCWR::start()
         RAW_OUTPUT_NO_ARROW(this->cost);
         RAW_OUTPUT_NO_ARROW(" ["); RAW_OUTPUT_NO_ARROW(this->rttp->objectiveFunctionNotPenalized()); RAW_OUTPUT_NO_ARROW("]");
         RAW_OUTPUT_NO_ARROW(" (does not meet "); 
-        RAW_OUTPUT_NO_ARROW(this->restrictionsNotMet); 
+        RAW_OUTPUT_NO_ARROW(this->rttp->numberOfRestrictionsNotMet()); 
         RAW_OUTPUT_NL(" restrictions)");
       }
     }

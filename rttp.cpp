@@ -123,7 +123,7 @@ bool RTTP::noConsecutiveHomeGames()
     }
   }
   
-  return true; // All sums of G turned out to be less or equal to 1
+  return true; // All sums of G turned out to be less than or equal to 1
 }
 
 // -----------------------------------------------------------------------------------
@@ -172,7 +172,7 @@ bool RTTP::lengthOfOffDays()
         }
       }
       
-      if (sumOfG < 1) // FIXME: I'm not sure this is correct.
+      if (sumOfG > 1/*this->maxConsecutiveOffDays*/) // FIXME: I'm not sure this is correct.
       {
         return false;
       }
@@ -313,6 +313,20 @@ RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 
 // -----------------------------------------------------------------------------------
 
+bool RTTP::nonRelaxedRestrictions()
+{
+  return this->noConsecutiveHomeGames() && 
+         this->lengthOfHomeGames() &&
+         this->lengthOfOffDays() && 
+         this->lengthOfAwayGames() && 
+         this->doubleRoundRobinTournament() &&
+         this->stayAtHomeOnHomeGameDay() && 
+         this->stayAtOpponentOnRoadGameDay() && 
+         this->stayAtPreviousVenueOnOffDay();
+}
+
+// -----------------------------------------------------------------------------------
+
 int RTTP::objectiveFunction()
 {
   return this->objectiveFunctionNotPenalized() + this->numberOfRestrictionsNotMet() * PENALIZE_COST;
@@ -329,6 +343,9 @@ int RTTP::objectiveFunctionNotPenalized()
     int teamCost = 0;
     for (size_t d = 1; d < (size_t)this->numberOfDays; d++)
     {
+      //cout << "i = " << i << endl;
+      //cout << "d = " << d << endl;
+      //cout << "V = " << this->V[i][d] << endl;
       teamCost += this->travelCosts[this->V[i][d - 1]][this->V[i][d]];
     }
     
@@ -375,12 +392,13 @@ void RTTP::generateBestNeighbour()
   bool foundBetter = false;
   int cost = this->objectiveFunction();
   
+  // Specific swaps
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
   {
     for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
     {
       // Deprecated code
-      if (false)
+      if (rand()%100 < RANDOM_SWAP_THRESHOLD)
       {
         //*
         size_t new_i = (size_t)(rand() % (this->numberOfTeams + 1) - 1);
@@ -406,7 +424,7 @@ void RTTP::generateBestNeighbour()
         }
       }
       
-      if (rand() < SWAP_GAMETYPE_THRESHOLD)
+      if (rand()%100 < SWAP_GAMETYPE_THRESHOLD && this->G[i][d] != G_OFFDAY && this->O[i][d] != O_NOOPONENT)
       {
         int temp = this->G[i][d];
         this->G[i][d] = this->G[this->O[i][d]][d];
@@ -415,7 +433,7 @@ void RTTP::generateBestNeighbour()
       
       this->fixVariables(); // This fixes the Venues variable.
       
-      if (this->objectiveFunction() < cost && this->doubleRoundRobinTournament())
+      if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
       {
         foundBetter = true;
         G = this->G;
@@ -423,6 +441,32 @@ void RTTP::generateBestNeighbour()
         V = this->V;
         cost = this->objectiveFunction();
       }
+    }
+  }
+  
+  // Swap one week for another
+  if (rand()%100 < SWAP_WEEK_THRESHOLD)
+  {
+    int d = rand() % this->numberOfDays;
+    int d2 = rand() % this->numberOfDays;
+    
+    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    {
+      int temp = this->O[i][d];
+      this->O[i][d] = this->O[i][d2];
+      this->O[i][d2] = temp;
+      
+      temp = this->G[i][d];
+      this->G[i][d] = this->G[i][d2];
+      this->G[i][d2] = temp;
+    }
+    if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
+    {
+      foundBetter = true;
+      G = this->G;
+      O = this->O;
+      V = this->V;
+      cost = this->objectiveFunction();
     }
   }
   
@@ -455,7 +499,7 @@ void RTTP::fixVariables()
         break;
         
         case G_ROADGAME:
-        this->V[i][d] = this->O[i][d];
+        this->V[i][d] = (this->O[i][d] == O_NOOPONENT ? i : this->O[i][d]); // This is a very dirty fix for a bug I haven't found. Sometimes for a G_ROADGAME, the oponent is O_NOOPONENT =S
         break;
         
         case G_OFFDAY:

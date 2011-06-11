@@ -1,8 +1,8 @@
 #include <iostream>
 #include "hcwr.h"
 
-#define MAX_ITERATIONS 1000
-#define MAX_RESTARTS 100
+#define MAX_ITERATIONS 20000
+#define MAX_RESTARTS 10
 
 using namespace std;
 

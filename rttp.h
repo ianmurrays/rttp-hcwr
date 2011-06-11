@@ -13,9 +13,11 @@ using namespace std;
 
 #define O_NOOPONENT -1
 
-#define PENALIZE_COST 10000
+#define PENALIZE_COST 100000
 
-#define SWAP_GAMETYPE_THRESHOLD 0.7 // 70% prob of swaping game types on a day
+#define SWAP_GAMETYPE_THRESHOLD 90
+#define SWAP_WEEK_THRESHOLD 20
+#define RANDOM_SWAP_THRESHOLD 60
 
 class RTTP
 {
@@ -108,6 +110,7 @@ class RTTP
     // -----------------------------------------------------------------------------------
     
     int numberOfRestrictionsNotMet();
+    bool nonRelaxedRestrictions(); // Returns false if one or more non-relaxed restrictions are not met
     
     // -----------------------------------------------------------------------------------
     
