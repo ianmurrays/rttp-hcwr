@@ -30,6 +30,11 @@ class HCWR
     int maxRestarts;
     
     /**
+     * Input file
+     */
+    string input;
+    
+    /**
      * Holds best solution so far
      */
     vector< vector<int> > G, O, V;

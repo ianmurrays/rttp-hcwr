@@ -611,3 +611,50 @@ void RTTP::generateInitialDoubleRoundRobinSolution()
   
   this->fixVariables(); // Fixes venues.
 }
+
+// -----------------------------------------------------------------------------------
+
+void RTTP::saveCurrentSolutionToFile(string fileName)
+{
+  ofstream output;
+  output.open(fileName.c_str(), ios::out | ios::app);
+  
+  // Write the header
+  output << "  ";
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    output << (i + 1) << "   ";
+  }
+  
+  output << endl;
+  
+  // Iterate dates.
+  for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+  {
+    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    {
+      // ROADGAME or HOMEGAME?
+      if (this->G[i][d] == G_ROADGAME)
+      {
+        output << " @";
+      }
+      else
+      {
+        output << "  ";
+      }
+      
+      if (this->O[i][d] == O_NOOPONENT)
+      {
+        output << "- ";
+      }
+      else
+      {
+        output << this->O[i][d] << " ";
+      }
+    }
+    
+    output << endl;
+  }
+  output << endl << "Cost: " << this->objectiveFunctionNotPenalized() << " [" << (this->validSolution() ? "VALID" : "INVALID") << "]" << endl << endl;
+  output.close();
+}

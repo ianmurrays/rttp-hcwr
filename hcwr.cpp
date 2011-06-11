@@ -22,6 +22,7 @@ HCWR::HCWR(string input, int maxIterations, int maxRestarts)
 {
   this->maxIterations = maxIterations;
   this->maxRestarts = maxRestarts;
+  this->input = input;
   
   // Open the input file
   ifstream inputFile (input.c_str());
@@ -150,6 +151,12 @@ void HCWR::start()
   RAW_OUTPUT_NL(this->cost);
   RAW_OUTPUT("Restrictions not met: ");
   RAW_OUTPUT_NL(this->restrictionsNotMet);
+  
+  OUTPUT_BEGIN("Writing solution to " + this->input + ".sol");
+  this->rttp->saveCurrentSolutionToFile(this->input + ".sol");
+  OUTPUT_END;
+  
+  
   if (this->valid)
   {
     OUTPUT("Solution is valid!");
@@ -234,6 +241,5 @@ void HCWR::start()
     {
       OUTPUT("stayAtPreviousVenueOnOffDay is NOT met");
     }
-
   }
 }

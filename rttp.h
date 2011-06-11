@@ -1,6 +1,7 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include <fstream>
 
 using namespace std;
 
@@ -152,5 +153,9 @@ class RTTP
     bool stayAtHomeOnHomeGameDay(); /* 4.31 */
     bool stayAtOpponentOnRoadGameDay(); /* 4.32 */
     bool stayAtPreviousVenueOnOffDay(); /* 4.33 */
+    
+    // -----------------------------------------------------------------------------------
+    
+    void saveCurrentSolutionToFile(string fileName);
 };
 #endif
