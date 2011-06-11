@@ -623,7 +623,7 @@ void RTTP::saveCurrentSolutionToFile(string fileName)
   output << "  ";
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
   {
-    output << (i + 1) << "   ";
+    output << i << "   ";
   }
   
   output << endl;
