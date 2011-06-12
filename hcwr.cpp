@@ -112,13 +112,22 @@ void HCWR::start()
   
   for (int i = 0; i < this->maxRestarts && this->continue_iterating; i++)
   {  
-    RAW_OUTPUT("Starting iteration #");
-    RAW_OUTPUT_NL(i);
-    //std::cout << '\r';
+    //RAW_OUTPUT("Starting iteration #");
+    //RAW_OUTPUT_NL(i);
+    std::cout << '\r';
+    RAW_OUTPUT("Iterating ... [");
+    int percent = (int)(((float)i / (float)this->maxRestarts) * 100) + 1;
+    int lines = percent / 5;
+    for (int l = 0; l < lines; l++) RAW_OUTPUT_NO_ARROW("|");
+    for (int l = 0; l < (20 - lines); l++) RAW_OUTPUT_NO_ARROW("-");
+    RAW_OUTPUT_NO_ARROW("] ");
+    RAW_OUTPUT_NO_ARROW(percent);
+    RAW_OUTPUT_NO_ARROW("%");
+    std::cout.flush();
     
     // New random solution
-    //this->rttp->generateRandomSolution();
-    this->rttp->generateInitialDoubleRoundRobinSolution();
+    this->rttp->generateRandomSolution();
+    //this->rttp->generateInitialDoubleRoundRobinSolution();
     
     for (int j = 0; j < this->maxIterations; j++)
     {
@@ -133,12 +142,17 @@ void HCWR::start()
       {
         // It is, store it.
         this->storeCurrentSolutionAsBest();
-        RAW_OUTPUT("Found better solution with cost ");
+        RAW_OUTPUT_NO_ARROW(" (found better solution with cost ");
         RAW_OUTPUT_NO_ARROW(this->cost);
         RAW_OUTPUT_NO_ARROW(" ["); RAW_OUTPUT_NO_ARROW(this->rttp->objectiveFunctionNotPenalized()); RAW_OUTPUT_NO_ARROW("]");
-        RAW_OUTPUT_NO_ARROW(" (does not meet "); 
+        RAW_OUTPUT_NO_ARROW(" does not meet "); 
         RAW_OUTPUT_NO_ARROW(this->rttp->numberOfRestrictionsNotMet()); 
         RAW_OUTPUT_NL(" restrictions)");
+      }
+      else if(this->rttp->objectiveFunction() >= this->cost)
+      {
+        // We already have the best point. stop iterating.
+        //break;
       }
     }
     
@@ -152,6 +166,12 @@ void HCWR::start()
   RAW_OUTPUT("Restrictions not met: ");
   RAW_OUTPUT_NL(this->restrictionsNotMet);
   
+  
+  // This enables us to check restrictions not met and save the current solution to a file
+  this->rttp->G = this->G;
+  this->rttp->O = this->O;
+  this->rttp->V = this->V;
+  
   OUTPUT_BEGIN("Writing solution to " + this->input + ".sol");
   this->rttp->saveCurrentSolutionToFile(this->input + ".sol");
   OUTPUT_END;
@@ -164,11 +184,6 @@ void HCWR::start()
   else
   {
     OUTPUT("Solution is NOT valid.");
-    
-    // This enables us to check restrictions not met
-    this->rttp->G = this->G;
-    this->rttp->O = this->O;
-    this->rttp->V = this->V;
     
     if (this->rttp->noConsecutiveHomeGames()) 
     {
@@ -240,6 +255,24 @@ void HCWR::start()
     else
     {
       OUTPUT("stayAtPreviousVenueOnOffDay is NOT met");
+    }
+    
+    if (this->rttp->roundConsistency()) 
+    {
+      OUTPUT("roundConsistency is met");
+    }
+    else
+    {
+      OUTPUT("roundConsistency is NOT met");
+    }
+    
+    if (this->rttp->freeGamesConsistency()) 
+    {
+      OUTPUT("freeGamesConsistency is met");
+    }
+    else
+    {
+      OUTPUT("freeGamesConsistency is NOT met");
     }
   }
 }

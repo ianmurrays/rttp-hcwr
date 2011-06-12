@@ -14,7 +14,7 @@ using namespace std;
 
 #define OFF_DAYS 1
 #define MAX_CONSECUTIVE_OFF_DAYS 1
-#define MAX_CONSECUTIVE_GAMES 6
+#define MAX_CONSECUTIVE_GAMES 5
 
 class HCWR
 {

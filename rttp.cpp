@@ -186,7 +186,42 @@ bool RTTP::lengthOfOffDays()
 
 bool RTTP::lengthOfAwayGames()
 {
-  // TODO: I don't understand this constraint.
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t k = 0; k < (size_t)this->numberOfDays; k++)
+    {
+      for (size_t d = 0; d < ((size_t)this->numberOfDays - k); d++)
+      {
+        int localGames = 0;
+        
+        for (size_t m = 0; m <= k; m++)
+        {
+          if (this->G[i][d + k] == G_HOMEGAME)
+          {
+            localGames++;
+          }
+        }
+        
+        if (localGames == 0)
+        {
+          int roadGames = 0;
+          for (size_t m = 0; m <= k; m++)
+          {
+            if (this->G[i][d + k] == G_ROADGAME)
+            {
+              roadGames++;
+            }
+          }
+          
+          if (roadGames > 3) // FIXME: I don't know if this is ok
+          {
+            return false;
+          }
+        }
+      }
+    }
+  }
+  
   return true;
 }
 
@@ -285,6 +320,69 @@ bool RTTP::stayAtPreviousVenueOnOffDay()
 
 // -----------------------------------------------------------------------------------
 
+/** 
+ * Makes sure that, if team A plays against B on a round, team B plays against team A
+ * on the same round.
+ */
+bool RTTP::roundConsistency()
+{
+  /*for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+  {
+    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    {
+      for (size_t i2 = 0; i2 < (size_t)this->numberOfTeams; i2++)
+      {
+        if (i != i2 && this->O[i][d] == this->O[i2][d])
+        {
+          return false;
+        }
+      }
+    }
+  }*/
+  
+  for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+  {
+    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    {
+      if ((int)this->O[i][d] != O_NOOPONENT && this->O[this->O[i][d]][d] != (int)i)
+      {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
+
+// -----------------------------------------------------------------------------------
+
+/**
+ * Makes sure the number of free games per round is even.
+ */
+bool RTTP::freeGamesConsistency()
+{
+  for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+  {
+    int freeGames = 0;
+    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    {
+      if (this->G[i][d] == G_OFFDAY)
+      {
+        freeGames++;
+      }
+    }
+    
+    if (freeGames % 2 != 0)
+    {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+// -----------------------------------------------------------------------------------
+
 bool RTTP::validSolution()
 {
   return this->noConsecutiveHomeGames() && 
@@ -294,7 +392,9 @@ bool RTTP::validSolution()
          this->doubleRoundRobinTournament() &&
          this->stayAtHomeOnHomeGameDay() && 
          this->stayAtOpponentOnRoadGameDay() && 
-         this->stayAtPreviousVenueOnOffDay();
+         this->stayAtPreviousVenueOnOffDay() &&
+         this->roundConsistency() &&
+         this->freeGamesConsistency();
 }
 
 // -----------------------------------------------------------------------------------
@@ -315,14 +415,17 @@ RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 
 bool RTTP::nonRelaxedRestrictions()
 {
-  return this->noConsecutiveHomeGames() && 
+  return this->doubleRoundRobinTournament();
+  return //this->noConsecutiveHomeGames() && 
          this->lengthOfHomeGames() &&
          this->lengthOfOffDays() && 
          this->lengthOfAwayGames() && 
          this->doubleRoundRobinTournament() &&
          this->stayAtHomeOnHomeGameDay() && 
          this->stayAtOpponentOnRoadGameDay() && 
-         this->stayAtPreviousVenueOnOffDay();
+         this->stayAtPreviousVenueOnOffDay() &&
+         this->roundConsistency() &&
+         this->freeGamesConsistency();
 }
 
 // -----------------------------------------------------------------------------------
@@ -530,6 +633,8 @@ int RTTP::numberOfRestrictionsNotMet()
   notMet += (this->stayAtHomeOnHomeGameDay() ? 0 : 1);
   notMet += (this->stayAtOpponentOnRoadGameDay() ? 0 : 1);
   notMet += (this->stayAtPreviousVenueOnOffDay() ? 0 : 1);
+  notMet += (this->roundConsistency() ? 0 : 1);
+  notMet += (this->freeGamesConsistency() ? 0 : 1);
   
   return notMet;
 }

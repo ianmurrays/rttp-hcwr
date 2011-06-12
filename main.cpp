@@ -1,8 +1,8 @@
 #include <iostream>
 #include "hcwr.h"
 
-#define MAX_ITERATIONS 10000
-#define MAX_RESTARTS 20
+#define MAX_ITERATIONS 1000
+#define MAX_RESTARTS 50
 
 using namespace std;
 
@@ -10,7 +10,7 @@ HCWR * hcwr;
 
 void capture_sigint(int sig)
 {
-  cout << "---> Captured SIGINT! Stopping." << endl;
+  cout << endl << "---> Captured SIGINT! Stopping." << endl;
   hcwr->continue_iterating = false;
 }
 

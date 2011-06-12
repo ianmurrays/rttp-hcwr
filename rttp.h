@@ -16,9 +16,20 @@ using namespace std;
 
 #define PENALIZE_COST 100000
 
+/*
+// Finds Solutions sometimes
+// 90 / 20 / 60
+// 95 / 70 / 40
 #define SWAP_GAMETYPE_THRESHOLD 90
 #define SWAP_WEEK_THRESHOLD 20
 #define RANDOM_SWAP_THRESHOLD 60
+//*/
+//*
+// Testing area :)
+#define SWAP_GAMETYPE_THRESHOLD 90
+#define SWAP_WEEK_THRESHOLD 90
+#define RANDOM_SWAP_THRESHOLD 10
+//*/
 
 class RTTP
 {
@@ -153,6 +164,8 @@ class RTTP
     bool stayAtHomeOnHomeGameDay(); /* 4.31 */
     bool stayAtOpponentOnRoadGameDay(); /* 4.32 */
     bool stayAtPreviousVenueOnOffDay(); /* 4.33 */
+    bool roundConsistency(); /* Added by myself */
+    bool freeGamesConsistency(); /* Added by myself */
     
     // -----------------------------------------------------------------------------------
     
