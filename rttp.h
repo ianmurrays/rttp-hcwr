@@ -14,7 +14,9 @@ using namespace std;
 
 #define O_NOOPONENT -1
 
-#define PENALIZE_COST 100000
+#define PENALIZE_COST 10000
+
+#define MAX_ITERATIONS_FOR_NEIGHBOUR 10000
 
 /*
 // Finds Solutions sometimes
@@ -26,9 +28,9 @@ using namespace std;
 //*/
 //*
 // Testing area :)
-#define SWAP_GAMETYPE_THRESHOLD 1
-#define SWAP_WEEK_THRESHOLD 100
-#define RANDOM_SWAP_THRESHOLD 1
+#define SWAP_GAMETYPE_THRESHOLD 10
+#define SWAP_WEEK_THRESHOLD 10
+#define RANDOM_SWAP_THRESHOLD 10
 //*/
 
 class RTTP

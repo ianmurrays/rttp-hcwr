@@ -100,6 +100,8 @@ void HCWR::storeCurrentSolutionAsBest()
 
 void HCWR::start()
 {
+  clock_t start = clock(); // Store the time we begin the algorithm.
+  
   OUTPUT("Starting");
   OUTPUT_BEGIN("Generating initial solution");
   //this->rttp->generateRandomSolution();
@@ -123,6 +125,14 @@ void HCWR::start()
     RAW_OUTPUT_NO_ARROW("] ");
     RAW_OUTPUT_NO_ARROW(percent);
     RAW_OUTPUT_NO_ARROW("%");
+    RAW_OUTPUT_NO_ARROW(" | Best so far [");
+    RAW_OUTPUT_NO_ARROW(this->cost);
+    RAW_OUTPUT_NO_ARROW("/");
+    RAW_OUTPUT_NO_ARROW(this->restrictionsNotMet);
+    RAW_OUTPUT_NO_ARROW("] | Running time [");
+    RAW_OUTPUT_NO_ARROW((int)(((double)clock() - start) / CLOCKS_PER_SEC));
+    RAW_OUTPUT_NO_ARROW(" secs]");
+    
     std::cout.flush();
     
     // New random solution
@@ -142,12 +152,12 @@ void HCWR::start()
       {
         // It is, store it.
         this->storeCurrentSolutionAsBest();
-        RAW_OUTPUT_NO_ARROW(" (found better solution with cost ");
+        /*RAW_OUTPUT_NO_ARROW(" (found better: ");
         RAW_OUTPUT_NO_ARROW(this->cost);
         RAW_OUTPUT_NO_ARROW(" ["); RAW_OUTPUT_NO_ARROW(this->rttp->objectiveFunctionNotPenalized()); RAW_OUTPUT_NO_ARROW("]");
-        RAW_OUTPUT_NO_ARROW(" does not meet "); 
+        RAW_OUTPUT_NO_ARROW(" doesn't meet "); 
         RAW_OUTPUT_NO_ARROW(this->rttp->numberOfRestrictionsNotMet()); 
-        RAW_OUTPUT_NL(" restrictions)");
+        RAW_OUTPUT_NL(" restrictions)");*/
       }
       else if(this->rttp->objectiveFunction() >= this->cost && BREAK_ON_NO_BETTER_SOLUTION)
       {

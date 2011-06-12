@@ -128,7 +128,7 @@ bool RTTP::noConsecutiveHomeGames()
 
 // -----------------------------------------------------------------------------------
 
-bool RTTP::lengthOfHomeGames()
+bool RTTP::lengthOfHomeGames() // This restriction's name is wrong, should be lengthOfGames
 {
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // for each team
   {
@@ -517,7 +517,7 @@ void RTTP::generateBestNeighbour()
   int cost = this->objectiveFunction();
   
   // Try to find neighbour
-  for (int end = 0; end < 1000; end++)
+  for (int end = 0; end < MAX_ITERATIONS_FOR_NEIGHBOUR; end++)
   {
     // Only do one swap!
     if (this->swapWeek() || this->swapGameType() || this->swapRandom())
