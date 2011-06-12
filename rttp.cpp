@@ -172,7 +172,7 @@ bool RTTP::lengthOfOffDays()
         }
       }
       
-      if (sumOfG > 1/*this->maxConsecutiveOffDays*/) // FIXME: I'm not sure this is correct.
+      if (sumOfG > this->maxConsecutiveOffDays) // FIXME: I'm not sure this is correct.
       {
         return false;
       }
@@ -383,6 +383,24 @@ bool RTTP::freeGamesConsistency()
 
 // -----------------------------------------------------------------------------------
 
+bool RTTP::teamShouldNotPlayItself()
+{
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+    {
+      if (this->O[i][d] == (int)i)
+      {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+}
+
+// -----------------------------------------------------------------------------------
+
 bool RTTP::validSolution()
 {
   return this->noConsecutiveHomeGames() && 
@@ -394,7 +412,8 @@ bool RTTP::validSolution()
          this->stayAtOpponentOnRoadGameDay() && 
          this->stayAtPreviousVenueOnOffDay() &&
          this->roundConsistency() &&
-         this->freeGamesConsistency();
+         this->freeGamesConsistency() &&
+         this->teamShouldNotPlayItself();
 }
 
 // -----------------------------------------------------------------------------------
@@ -415,8 +434,9 @@ RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 
 bool RTTP::nonRelaxedRestrictions()
 {
-  return this->doubleRoundRobinTournament();
-  return //this->noConsecutiveHomeGames() && 
+  //return true;
+  //return this->doubleRoundRobinTournament();
+  return this->noConsecutiveHomeGames() && 
          this->lengthOfHomeGames() &&
          this->lengthOfOffDays() && 
          this->lengthOfAwayGames() && 
@@ -425,7 +445,8 @@ bool RTTP::nonRelaxedRestrictions()
          this->stayAtOpponentOnRoadGameDay() && 
          this->stayAtPreviousVenueOnOffDay() &&
          this->roundConsistency() &&
-         this->freeGamesConsistency();
+         this->freeGamesConsistency() &&
+         this->teamShouldNotPlayItself();
 }
 
 // -----------------------------------------------------------------------------------
@@ -495,12 +516,65 @@ void RTTP::generateBestNeighbour()
   bool foundBetter = false;
   int cost = this->objectiveFunction();
   
-  // Specific swaps
+  // Try to find neighbour
+  for (int end = 0; end < 1000; end++)
+  {
+    // Only do one swap!
+    if (this->swapWeek() || this->swapGameType() || this->swapRandom())
+    {
+      if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
+      {
+        foundBetter = true;
+        G = this->G;
+        O = this->O;
+        V = this->V;
+        cost = this->objectiveFunction();
+      }
+    }
+  }
+  
+  if ( ! foundBetter)
+  {
+    this->G = Gor;
+    this->O = Oor;
+    this->V = Vor;
+  }
+  else
+  {
+    this->G = G;
+    this->O = O;
+    this->V = V;
+  }
+}
+
+bool RTTP::swapGameType()
+{
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
   {
     for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
     {
-      // Deprecated code
+      if (rand()%100 < SWAP_GAMETYPE_THRESHOLD && this->G[i][d] != G_OFFDAY && this->O[i][d] != O_NOOPONENT)
+      {
+        int temp = this->G[i][d];
+        this->G[i][d] = this->G[this->O[i][d]][d];
+        this->G[this->O[i][d]][d] = temp;
+        
+        return true;
+      }
+      
+      this->fixVariables(); // This fixes the Venues variable.
+    }
+  }
+  
+  return false;
+}
+
+bool RTTP::swapRandom()
+{
+  for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+  {
+    for (size_t d = 0; d < (size_t)this->numberOfDays; d++)
+    {
       if (rand()%100 < RANDOM_SWAP_THRESHOLD)
       {
         //*
@@ -525,28 +599,17 @@ void RTTP::generateBestNeighbour()
           this->G[i][new_d] = this->G[i][d] == G_HOMEGAME ? G_ROADGAME : G_HOMEGAME;
           //*/
         }
-      }
-      
-      if (rand()%100 < SWAP_GAMETYPE_THRESHOLD && this->G[i][d] != G_OFFDAY && this->O[i][d] != O_NOOPONENT)
-      {
-        int temp = this->G[i][d];
-        this->G[i][d] = this->G[this->O[i][d]][d];
-        this->G[this->O[i][d]][d] = temp;
-      }
-      
-      this->fixVariables(); // This fixes the Venues variable.
-      
-      if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
-      {
-        foundBetter = true;
-        G = this->G;
-        O = this->O;
-        V = this->V;
-        cost = this->objectiveFunction();
+        this->fixVariables(); // This fixes the Venues variable.
+        return true;
       }
     }
   }
   
+  return false;
+}
+
+bool RTTP::swapWeek()
+{
   // Swap one week for another
   if (rand()%100 < SWAP_WEEK_THRESHOLD)
   {
@@ -563,28 +626,21 @@ void RTTP::generateBestNeighbour()
       this->G[i][d] = this->G[i][d2];
       this->G[i][d2] = temp;
     }
-    if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
+    
+    this->fixVariables(); // This fixes the Venues variable.
+    return true;
+    
+    /*if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
     {
       foundBetter = true;
       G = this->G;
       O = this->O;
       V = this->V;
       cost = this->objectiveFunction();
-    }
+    }*/
   }
   
-  if ( ! foundBetter)
-  {
-    this->G = Gor;
-    this->O = Oor;
-    this->V = Vor;
-  }
-  else
-  {
-    this->G = G;
-    this->O = O;
-    this->V = V;
-  }
+  return false;
 }
 
 // -----------------------------------------------------------------------------------
@@ -635,6 +691,7 @@ int RTTP::numberOfRestrictionsNotMet()
   notMet += (this->stayAtPreviousVenueOnOffDay() ? 0 : 1);
   notMet += (this->roundConsistency() ? 0 : 1);
   notMet += (this->freeGamesConsistency() ? 0 : 1);
+  notMet += (this->teamShouldNotPlayItself() ? 0 : 1);
   
   return notMet;
 }

@@ -12,9 +12,11 @@ using namespace std;
 #ifndef _HCWR_HEADER
 #define _HCWR_HEADER
 
-#define OFF_DAYS 1
-#define MAX_CONSECUTIVE_OFF_DAYS 1
-#define MAX_CONSECUTIVE_GAMES 5
+#define OFF_DAYS 3
+#define MAX_CONSECUTIVE_OFF_DAYS 2
+#define MAX_CONSECUTIVE_GAMES 4
+
+#define BREAK_ON_NO_BETTER_SOLUTION true
 
 class HCWR
 {

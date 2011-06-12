@@ -126,8 +126,8 @@ void HCWR::start()
     std::cout.flush();
     
     // New random solution
-    this->rttp->generateRandomSolution();
-    //this->rttp->generateInitialDoubleRoundRobinSolution();
+    //this->rttp->generateRandomSolution();
+    this->rttp->generateInitialDoubleRoundRobinSolution();
     
     for (int j = 0; j < this->maxIterations; j++)
     {
@@ -149,10 +149,10 @@ void HCWR::start()
         RAW_OUTPUT_NO_ARROW(this->rttp->numberOfRestrictionsNotMet()); 
         RAW_OUTPUT_NL(" restrictions)");
       }
-      else if(this->rttp->objectiveFunction() >= this->cost)
+      else if(this->rttp->objectiveFunction() >= this->cost && BREAK_ON_NO_BETTER_SOLUTION)
       {
         // We already have the best point. stop iterating.
-        //break;
+        break;
       }
     }
     
@@ -273,6 +273,15 @@ void HCWR::start()
     else
     {
       OUTPUT("freeGamesConsistency is NOT met");
+    }
+    
+    if (this->rttp->teamShouldNotPlayItself()) 
+    {
+      OUTPUT("teamShouldNotPlayItself is met");
+    }
+    else
+    {
+      OUTPUT("teamShouldNotPlayItself is NOT met");
     }
   }
 }

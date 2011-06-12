@@ -26,9 +26,9 @@ using namespace std;
 //*/
 //*
 // Testing area :)
-#define SWAP_GAMETYPE_THRESHOLD 90
-#define SWAP_WEEK_THRESHOLD 90
-#define RANDOM_SWAP_THRESHOLD 10
+#define SWAP_GAMETYPE_THRESHOLD 1
+#define SWAP_WEEK_THRESHOLD 100
+#define RANDOM_SWAP_THRESHOLD 1
 //*/
 
 class RTTP
@@ -144,6 +144,9 @@ class RTTP
     void generateNeighbour(); // First Improvement
     void generateBestNeighbour(); // Best Improvement
     void fixVariables();
+    bool swapGameType();
+    bool swapWeek();
+    bool swapRandom();
     
     // -----------------------------------------------------------------------------------
     
@@ -166,6 +169,7 @@ class RTTP
     bool stayAtPreviousVenueOnOffDay(); /* 4.33 */
     bool roundConsistency(); /* Added by myself */
     bool freeGamesConsistency(); /* Added by myself */
+    bool teamShouldNotPlayItself(); /* Added by myself */
     
     // -----------------------------------------------------------------------------------
     
