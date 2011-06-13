@@ -10,6 +10,18 @@ RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int m
   this->maxConsecutiveGames = maxConsecutiveGames;
   this->maxConsecutiveAwayGames = maxConsecutiveAwayGames;
   
+  if (this->maxConsecutiveGames > this->numberOfDays)
+  {
+    std::cout << "FATAL: maxConsecutiveGames cannot be bigger than numberOfDays" << endl;
+    exit(1);
+  }
+  
+  if (this->maxConsecutiveAwayGames > this->numberOfDays)
+  {
+    std::cout << "FATAL: maxConsecutiveAwayGames cannot be bigger than numberOfDays" << endl;
+    exit(1);
+  }
+  
   // Initialize all problem variables
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
   {
@@ -117,7 +129,7 @@ bool RTTP::noConsecutiveHomeGames()
         }
       }
       
-      if (sumOfG > 1)
+      if (sumOfG > NO_CONSECUTIVE_HOMEGAMES)
       {
         return false;
       }
@@ -197,7 +209,7 @@ bool RTTP::lengthOfAwayGames()
         
         for (size_t m = 0; m <= k; m++)
         {
-          if (this->G[i][d + k] == G_HOMEGAME)
+          if (this->G[i][d + m] == G_HOMEGAME)
           {
             localGames++;
           }
@@ -208,12 +220,13 @@ bool RTTP::lengthOfAwayGames()
           int roadGames = 0;
           for (size_t m = 0; m <= k; m++)
           {
-            if (this->G[i][d + k] == G_ROADGAME)
+            if (this->G[i][d + m] == G_ROADGAME)
             {
               roadGames++;
             }
           }
           
+          std::cout << "roadGames = " << roadGames << "; maxConsecutiveAwayGames = " << maxConsecutiveAwayGames << endl;
           if (roadGames > this->maxConsecutiveAwayGames) // FIXME: I don't know if this is ok
           {
             return false;
@@ -222,7 +235,7 @@ bool RTTP::lengthOfAwayGames()
       }
     }
   }
-  
+  std::cout << "true!" << endl;
   return true;
 }
 
