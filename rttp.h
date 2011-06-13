@@ -16,8 +16,8 @@ using namespace std;
 
 #define PENALIZE_COST 10000
 
-#define MAX_ITERATIONS_FOR_NEIGHBOUR 10000
-#define NO_CONSECUTIVE_HOMEGAMES 2
+#define MAX_ITERATIONS_FOR_NEIGHBOUR 20000
+#define NO_CONSECUTIVE_HOMEGAMES 3
 
 /*
 // Finds Solutions sometimes
@@ -29,9 +29,9 @@ using namespace std;
 //*/
 //*
 // Testing area :)
-#define SWAP_WEEK_THRESHOLD 30
-#define SWAP_GAMETYPE_THRESHOLD 30
-#define RANDOM_SWAP_THRESHOLD 30
+#define SWAP_WEEK_THRESHOLD 40
+#define SWAP_GAMETYPE_THRESHOLD 40
+#define RANDOM_SWAP_THRESHOLD 40
 //*/
 
 class RTTP

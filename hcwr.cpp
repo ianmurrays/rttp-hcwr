@@ -170,7 +170,7 @@ void HCWR::start()
     // New random solution
     //this->rttp->generateRandomSolution();
     this->rttp->generateInitialDoubleRoundRobinSolution();
-    if (this->rttp->objectiveFunction() < this->cost) {this->storeCurrentSolutionAsBest();}
+    //if (this->rttp->objectiveFunction() < this->cost) {this->storeCurrentSolutionAsBest();}
     
     for (int j = 0; j < this->maxIterations; j++)
     {

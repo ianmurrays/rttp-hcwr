@@ -226,7 +226,6 @@ bool RTTP::lengthOfAwayGames()
             }
           }
           
-          std::cout << "roadGames = " << roadGames << "; maxConsecutiveAwayGames = " << maxConsecutiveAwayGames << endl;
           if (roadGames > this->maxConsecutiveAwayGames) // FIXME: I don't know if this is ok
           {
             return false;
@@ -235,7 +234,7 @@ bool RTTP::lengthOfAwayGames()
       }
     }
   }
-  std::cout << "true!" << endl;
+  
   return true;
 }
 
@@ -533,8 +532,7 @@ void RTTP::generateBestNeighbour()
   // Try to find neighbour
   for (int end = 0; end < MAX_ITERATIONS_FOR_NEIGHBOUR; end++)
   {
-    // Only do one swap!
-    this->swapWeek();
+    for (int i = 0; i < rand()%10; i++) {this->swapWeek();}
     this->swapGameType();
     this->swapRandom();
     
