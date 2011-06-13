@@ -435,7 +435,7 @@ RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 
 bool RTTP::nonRelaxedRestrictions()
 {
-  return true;
+  //return true;
   //return this->doubleRoundRobinTournament();
   return this->noConsecutiveHomeGames() && 
          this->lengthOfGames() &&
@@ -527,7 +527,7 @@ void RTTP::generateBestNeighbour()
     
     if ( true )
     {
-      if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
+      if ((this->objectiveFunction() < cost)/* && this->nonRelaxedRestrictions()*/)
       {
         foundBetter = true;
         G = this->G;

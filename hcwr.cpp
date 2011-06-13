@@ -1,6 +1,10 @@
 #include "hcwr.h"
 #include <iostream>
 
+#define ENDC "\033[m"
+#define RED "\033[93m"
+#define GREEN "\033[92m"
+
 #define DEBUG(x) std::cout << "[DEBUG] " << x << endl
 #define OUTPUT(x) std::cout << "---> " << x << endl
 #define RAW_OUTPUT(x) std::cout << "---> " << x
@@ -8,6 +12,8 @@
 #define RAW_OUTPUT_NL(x) std::cout << x << endl
 #define OUTPUT_BEGIN(x) std::cout << "---> " << x << " ... "
 #define OUTPUT_END std::cout << "done!" << endl
+#define OUTPUT_RED(x) std::cout << "---> " << RED << x << ENDC << endl;
+#define OUTPUT_GREEN(x) std::cout << "---> " << GREEN << x << ENDC << endl;
 
 // Returns a string with leading/trailing characters of a set stripped
 std::string trimmed( std::string const& str, char const* sepSet)
@@ -172,6 +178,8 @@ void HCWR::start()
       this->rttp->generateBestNeighbour();
       //this->rttp->generateBestNeighbour();
       //OUTPUT_END;
+      //system("echo \"\" > tempfile &");
+      //this->rttp->saveCurrentSolutionToFile("tempfile");
       
       // Is it better?
       if (this->rttp->objectiveFunction() < this->cost && this->rttp->nonRelaxedRestrictions()) // The latter to avoid accepting randomized invalid solutions as better
@@ -223,101 +231,101 @@ void HCWR::start()
     
     if (this->rttp->noConsecutiveHomeGames()) 
     {
-      OUTPUT("noConsecutiveHomeGames is met");
+      OUTPUT_GREEN("noConsecutiveHomeGames is met");
     }
     else
     {
-      OUTPUT("noConsecutiveHomeGames is NOT met");
+      OUTPUT_RED("noConsecutiveHomeGames is NOT met");
     }
 
     if (this->rttp->lengthOfGames()) 
     {
-      OUTPUT("lengthOfGames is met");
+      OUTPUT_GREEN("lengthOfGames is met");
     }
     else
     {
-      OUTPUT("lengthOfGames is NOT met");
+      OUTPUT_RED("lengthOfGames is NOT met");
     }
 
     if (this->rttp->lengthOfOffDays()) 
     {
-      OUTPUT("lengthOfOffDays is met");
+      OUTPUT_GREEN("lengthOfOffDays is met");
     }
     else
     {
-      OUTPUT("lengthOfOffDays is NOT met");
+      OUTPUT_RED("lengthOfOffDays is NOT met");
     }
 
     if (this->rttp->lengthOfAwayGames()) 
     {
-      OUTPUT("lengthOfAwayGames is met");
+      OUTPUT_GREEN("lengthOfAwayGames is met");
     }
     else
     {
-      OUTPUT("lengthOfAwayGames is NOT met");
+      OUTPUT_RED("lengthOfAwayGames is NOT met");
     }
 
     if (this->rttp->doubleRoundRobinTournament()) 
     {
-      OUTPUT("doubleRoundRobinTournament is met");
+      OUTPUT_GREEN("doubleRoundRobinTournament is met");
     }
     else
     {
-      OUTPUT("doubleRoundRobinTournament is NOT met");
+      OUTPUT_RED("doubleRoundRobinTournament is NOT met");
     }
 
     if (this->rttp->stayAtHomeOnHomeGameDay()) 
     {
-      OUTPUT("stayAtHomeOnHomeGameDay is met");
+      OUTPUT_GREEN("stayAtHomeOnHomeGameDay is met");
     }
     else
     {
-      OUTPUT("stayAtHomeOnHomeGameDay is NOT met");
+      OUTPUT_RED("stayAtHomeOnHomeGameDay is NOT met");
     }
 
     if (this->rttp->stayAtOpponentOnRoadGameDay()) 
     {
-      OUTPUT("stayAtOpponentOnRoadGameDay is met");
+      OUTPUT_GREEN("stayAtOpponentOnRoadGameDay is met");
     }
     else
     {
-      OUTPUT("stayAtOpponentOnRoadGameDay is NOT met");
+      OUTPUT_RED("stayAtOpponentOnRoadGameDay is NOT met");
     }
 
     if (this->rttp->stayAtPreviousVenueOnOffDay()) 
     {
-      OUTPUT("stayAtPreviousVenueOnOffDay is met");
+      OUTPUT_GREEN("stayAtPreviousVenueOnOffDay is met");
     }
     else
     {
-      OUTPUT("stayAtPreviousVenueOnOffDay is NOT met");
+      OUTPUT_RED("stayAtPreviousVenueOnOffDay is NOT met");
     }
     
     if (this->rttp->roundConsistency()) 
     {
-      OUTPUT("roundConsistency is met");
+      OUTPUT_GREEN("roundConsistency is met");
     }
     else
     {
-      OUTPUT("roundConsistency is NOT met");
+      OUTPUT_RED("roundConsistency is NOT met");
     }
     
     if (this->rttp->freeGamesConsistency()) 
     {
-      OUTPUT("freeGamesConsistency is met");
+      OUTPUT_GREEN("freeGamesConsistency is met");
     }
     else
     {
-      OUTPUT("freeGamesConsistency is NOT met");
+      OUTPUT_RED("freeGamesConsistency is NOT met");
     }
     
     if (this->rttp->teamShouldNotPlayItself()) 
     {
-      OUTPUT("teamShouldNotPlayItself is met");
+      OUTPUT_GREEN("teamShouldNotPlayItself is met");
     }
     else
     {
-      OUTPUT("teamShouldNotPlayItself is NOT met");
+      OUTPUT_RED("teamShouldNotPlayItself is NOT met");
     }
   }
 }
