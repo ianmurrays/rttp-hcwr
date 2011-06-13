@@ -2,12 +2,13 @@
 #include "schedule.cpp" // Includes a round-robin scheduler
 #include <iostream>
 
-RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int maxConsecutiveGames)
+RTTP::RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int maxConsecutiveGames, int maxConsecutiveAwayGames)
 {
   this->numberOfTeams = numberOfTeams;
   this->numberOfDays = numberOfDays;
   this->maxConsecutiveOffDays = maxConsecutiveOffDays;
   this->maxConsecutiveGames = maxConsecutiveGames;
+  this->maxConsecutiveAwayGames = maxConsecutiveAwayGames;
   
   // Initialize all problem variables
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
@@ -128,7 +129,7 @@ bool RTTP::noConsecutiveHomeGames()
 
 // -----------------------------------------------------------------------------------
 
-bool RTTP::lengthOfHomeGames() // This restriction's name is wrong, should be lengthOfGames
+bool RTTP::lengthOfGames() // This restriction's name is wrong, should be lengthOfGames
 {
   for (size_t i = 0; i < (size_t)this->numberOfTeams; i++) // for each team
   {
@@ -213,7 +214,7 @@ bool RTTP::lengthOfAwayGames()
             }
           }
           
-          if (roadGames > 3) // FIXME: I don't know if this is ok
+          if (roadGames > this->maxConsecutiveAwayGames) // FIXME: I don't know if this is ok
           {
             return false;
           }
@@ -404,7 +405,7 @@ bool RTTP::teamShouldNotPlayItself()
 bool RTTP::validSolution()
 {
   return this->noConsecutiveHomeGames() && 
-         this->lengthOfHomeGames() &&
+         this->lengthOfGames() &&
          this->lengthOfOffDays() && 
          this->lengthOfAwayGames() && 
          this->doubleRoundRobinTournament() &&
@@ -434,10 +435,10 @@ RTTP * RTTP::setIndividualCost(size_t teamA, size_t teamB, int cost)
 
 bool RTTP::nonRelaxedRestrictions()
 {
-  //return true;
+  return true;
   //return this->doubleRoundRobinTournament();
   return this->noConsecutiveHomeGames() && 
-         this->lengthOfHomeGames() &&
+         this->lengthOfGames() &&
          this->lengthOfOffDays() && 
          this->lengthOfAwayGames() && 
          this->doubleRoundRobinTournament() &&
@@ -520,7 +521,11 @@ void RTTP::generateBestNeighbour()
   for (int end = 0; end < MAX_ITERATIONS_FOR_NEIGHBOUR; end++)
   {
     // Only do one swap!
-    if (this->swapWeek() || this->swapGameType() || this->swapRandom())
+    this->swapWeek();
+    this->swapGameType();
+    this->swapRandom();
+    
+    if ( true )
     {
       if ((this->objectiveFunction() < cost) && this->nonRelaxedRestrictions())
       {
@@ -613,19 +618,27 @@ bool RTTP::swapWeek()
   // Swap one week for another
   if (rand()%100 < SWAP_WEEK_THRESHOLD)
   {
+    int i = rand() % this->numberOfTeams;
+    int i2 = rand() % this->numberOfTeams;
     int d = rand() % this->numberOfDays;
     int d2 = rand() % this->numberOfDays;
     
-    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
-    {
+    //for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    //{
       int temp = this->O[i][d];
       this->O[i][d] = this->O[i][d2];
       this->O[i][d2] = temp;
+      temp = this->O[i2][d];
+      this->O[i2][d] = this->O[i2][d2];
+      this->O[i2][d2] = temp;
       
       temp = this->G[i][d];
       this->G[i][d] = this->G[i][d2];
       this->G[i][d2] = temp;
-    }
+      temp = this->G[i2][d];
+      this->G[i2][d] = this->G[i2][d2];
+      this->G[i2][d2] = temp;
+    //}
     
     this->fixVariables(); // This fixes the Venues variable.
     return true;
@@ -682,7 +695,7 @@ int RTTP::numberOfRestrictionsNotMet()
 {
   int notMet = 0;
   notMet += (this->noConsecutiveHomeGames() ? 0 : 1);
-  notMet += (this->lengthOfHomeGames() ? 0 : 1);
+  notMet += (this->lengthOfGames() ? 0 : 1);
   notMet += (this->lengthOfOffDays() ? 0 : 1);
   notMet += (this->lengthOfAwayGames() ? 0 : 1);
   notMet += (this->doubleRoundRobinTournament() ? 0 : 1);

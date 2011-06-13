@@ -2,7 +2,7 @@
 #include "hcwr.h"
 
 #define MAX_ITERATIONS 1 // Leave like this
-#define MAX_RESTARTS 500
+#define MAX_RESTARTS 4000
 
 using namespace std;
 

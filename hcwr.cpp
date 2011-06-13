@@ -57,7 +57,7 @@ HCWR::HCWR(string input, int maxIterations, int maxRestarts)
   }
   
   // We can now initialize our RTTP instance
-  this->rttp = new RTTP(distances.size(), (2 * (distances.size() - 1) + OFF_DAYS), MAX_CONSECUTIVE_OFF_DAYS, MAX_CONSECUTIVE_GAMES);
+  this->rttp = new RTTP(distances.size(), (2 * (distances.size() - 1) + OFF_DAYS), MAX_CONSECUTIVE_OFF_DAYS, MAX_CONSECUTIVE_GAMES, MAX_CONSECUTIVE_AWAY_GAMES);
   
   // Set costs
   for (size_t i = 0; i < distances.size(); i++)
@@ -135,6 +135,32 @@ void HCWR::start()
     
     std::cout.flush();
     
+    // Say progress if on mac
+    #ifdef __APPLE_CC__
+    static bool said = false;
+    static int last_cost = -1;
+    if (percent % 5 == 0 && ! said)
+    {
+      char command[1024];
+      if (last_cost > this->cost)
+      {
+        sprintf(command, "say \"Best so far: %d and %d restrictions not met. Running time is %d seconds.\" &", this->cost, this->restrictionsNotMet, (int)(((double)clock() - start) / CLOCKS_PER_SEC));
+      }
+      else
+      {
+        sprintf(command, "say \"No improvements. Running time is %d seconds.\" &", (int)(((double)clock() - start) / CLOCKS_PER_SEC));
+      }
+      
+      system(command);
+      said = true;
+      last_cost = this->cost;
+    }
+    else if (percent % 5 != 0)
+    {
+      said = false;
+    }
+    #endif
+    
     // New random solution
     //this->rttp->generateRandomSolution();
     this->rttp->generateInitialDoubleRoundRobinSolution();
@@ -204,13 +230,13 @@ void HCWR::start()
       OUTPUT("noConsecutiveHomeGames is NOT met");
     }
 
-    if (this->rttp->lengthOfHomeGames()) 
+    if (this->rttp->lengthOfGames()) 
     {
-      OUTPUT("lengthOfHomeGames is met");
+      OUTPUT("lengthOfGames is met");
     }
     else
     {
-      OUTPUT("lengthOfHomeGames is NOT met");
+      OUTPUT("lengthOfGames is NOT met");
     }
 
     if (this->rttp->lengthOfOffDays()) 

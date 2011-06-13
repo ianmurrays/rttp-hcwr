@@ -28,9 +28,9 @@ using namespace std;
 //*/
 //*
 // Testing area :)
-#define SWAP_GAMETYPE_THRESHOLD 10
-#define SWAP_WEEK_THRESHOLD 10
-#define RANDOM_SWAP_THRESHOLD 10
+#define SWAP_WEEK_THRESHOLD 70
+#define SWAP_GAMETYPE_THRESHOLD 60
+#define RANDOM_SWAP_THRESHOLD 40
 //*/
 
 class RTTP
@@ -49,6 +49,7 @@ class RTTP
      * Defines the maximum consecutive days a team can play.
      */
     int maxConsecutiveGames;
+    int maxConsecutiveAwayGames;
     
     /**
      * Defines number of days to play
@@ -98,7 +99,7 @@ class RTTP
     /**
      * Constructor. Initializes all problem variables as well.
      */
-    RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int maxConsecutiveGames);
+    RTTP(int numberOfTeams, int numberOfDays, int maxConsecutiveOffDays, int maxConsecutiveGames, int maxConsecutiveAwayGames);
     
     /**
      * Destructor
@@ -162,7 +163,7 @@ class RTTP
      * paper for RTTP.
      */
     bool noConsecutiveHomeGames(); /* 4.25 */
-    bool lengthOfHomeGames(); /* 4.26 */
+    bool lengthOfGames(); /* 4.26 */
     bool lengthOfOffDays(); /* 4.27 */
     bool lengthOfAwayGames(); /* 4.28 */
     bool doubleRoundRobinTournament(); /* 4.29, 4.30 */
