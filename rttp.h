@@ -29,7 +29,8 @@ using namespace std;
 //*/
 //*
 // Testing area :)
-#define SWAP_WEEK_THRESHOLD 40
+#define SWAP_WEEK_THRESHOLD 60
+#define SWAP_WHOLE_WEEK_THRESHOLD 90
 #define SWAP_GAMETYPE_THRESHOLD 40
 #define RANDOM_SWAP_THRESHOLD 40
 //*/
@@ -150,6 +151,7 @@ class RTTP
     void fixVariables();
     bool swapGameType();
     bool swapWeek();
+    bool swapWholeWeek();
     bool swapRandom();
     
     // -----------------------------------------------------------------------------------

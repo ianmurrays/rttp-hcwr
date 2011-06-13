@@ -183,7 +183,7 @@ void HCWR::start()
       //this->rttp->saveCurrentSolutionToFile("tempfile");
       
       // Is it better?
-      if (this->rttp->objectiveFunction() < this->cost && this->rttp->nonRelaxedRestrictions()) // The latter to avoid accepting randomized invalid solutions as better
+      if (this->rttp->objectiveFunction() < (int)(this->cost * 1.0)/* && this->rttp->nonRelaxedRestrictions()*/) // The latter to avoid accepting randomized invalid solutions as better
       {
         // It is, store it.
         this->storeCurrentSolutionAsBest();

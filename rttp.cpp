@@ -532,9 +532,10 @@ void RTTP::generateBestNeighbour()
   // Try to find neighbour
   for (int end = 0; end < MAX_ITERATIONS_FOR_NEIGHBOUR; end++)
   {
-    for (int i = 0; i < rand()%10; i++) {this->swapWeek();}
+    for (int i = 0; i < rand()%5; i++) {this->swapWeek();}
+    this->swapWholeWeek();
     this->swapGameType();
-    this->swapRandom();
+    for (int i = 0; i < rand()%5; i++) {this->swapRandom();}
     
     if ( true )
     {
@@ -619,6 +620,30 @@ bool RTTP::swapRandom()
         return true;
       }
     }
+  }
+  
+  return false;
+}
+
+bool RTTP::swapWholeWeek()
+{
+  if (rand()%100 < SWAP_WHOLE_WEEK_THRESHOLD)
+  {
+    int d = rand() % this->numberOfDays;
+    int d2 = rand() % this->numberOfDays;
+
+    for (size_t i = 0; i < (size_t)this->numberOfTeams; i++)
+    {
+      int temp = this->O[i][d];
+      this->O[i][d] = this->O[i][d2];
+      this->O[i][d2] = temp;
+
+      temp = this->G[i][d];
+      this->G[i][d] = this->G[i][d2];
+      this->G[i][d2] = temp;
+    }
+
+    return true;
   }
   
   return false;
