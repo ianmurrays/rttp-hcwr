@@ -484,6 +484,12 @@ int RTTP::objectiveFunctionNotPenalized()
       //cout << "d = " << d << endl;
       //cout << "V = " << this->V[i][d] << endl;
       teamCost += this->travelCosts[this->V[i][d - 1]][this->V[i][d]];
+
+      if (d == (size_t)(this->numberOfDays - 1) && this->G[i][d] != G_HOMEGAME)
+      {
+        // Add the cost of returning home
+        teamCost += this->travelCosts[this->V[i][d]][i];
+      }
     }
     
     cost += teamCost;
