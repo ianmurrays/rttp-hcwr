@@ -19,10 +19,10 @@ int main (int argc, char * const argv[]) {
   
   if (argc != 2) 
   {
-    cout << "Usage: " << argv[0] << " datafile.txt" << endl;
+    cout << "Usage: " << argv[0] << " datafile.txt < inputInstance (datafile.txt is name of file where I will store the output)" << endl;
     exit(1);
   }
-  
+    
   filename = argv[1];
   
   hcwr = new HCWR(filename, MAX_ITERATIONS, MAX_RESTARTS);

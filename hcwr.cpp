@@ -31,19 +31,21 @@ HCWR::HCWR(string input, int maxIterations, int maxRestarts)
   this->input = input;
   
   // Open the input file
-  ifstream inputFile (input.c_str());
+  //ifstream inputFile (input.c_str());
+  //istream inputFile = cin;
   
-  if ( ! inputFile.is_open())
-  {
-    exit(1);
-  }
+  //if ( ! inputFile.is_open())
+  //{
+  //  exit(1);
+  //}
   
   // Parse it
   string line;
   string number;
   vector< vector<int> > distances; // Stores distances matrix
 
-  while (getline(inputFile, line))
+  //while (getline(inputFile, line))
+  while (getline(cin, line))
   {
     if (trimmed(line, " \t") == "")
     {
